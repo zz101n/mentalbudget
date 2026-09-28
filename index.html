@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마음 영수증 심층 상담 슈퍼바이저</title>
+    <title>마음 영수증 스마트 심층 상담 가이드 & 슈퍼바이저</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -36,7 +36,7 @@
         /* 채팅 영역 */
         .chat-container { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
         .chat-messages { flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: #fafafa; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
-        .msg { font-size: 0.88rem; padding: 10px 14px; border-radius: 10px; max-width: 85%; line-height: 1.5; }
+        .msg { font-size: 0.88rem; padding: 10px 14px; border-radius: 10px; max-width: 85%; line-height: 1.5; word-break: break-all; }
         .msg.user { background: #dbeafe; align-self: flex-end; color: #1e3a8a; }
         .msg.ai { background: #ffffff; border: 1px solid var(--border); align-self: flex-start; color: #334155; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
         
@@ -55,7 +55,7 @@
 <div class="container">
     <header>
         <h1>✨ 마음 영수증 스마트 심층 상담 가이드 & 슈퍼바이저</h1>
-        <p>링크 접속 즉시 사용 가능 | API 키 불필요 | 실시간 고품질 시뮬레이션</p>
+        <p>링크 접속 즉시 사용 가능 | API 키 불필요 | 다채로운 실시간 시뮬레이션</p>
     </header>
 
     <div class="main-grid">
@@ -95,7 +95,8 @@
                 <div class="preset-chips">
                     <button class="chip" onclick="quickAsk('내담자가 방어적인 태도를 보여요. 대처법 추천해줘')">🛡️ 내담자 방어 대처법</button>
                     <button class="chip" onclick="quickAsk('이 항목에서 쓸 수 있는 부드러운 공감 문장 짜줘')">🗣️ 공감 멘트 추천</button>
-                    <button class="chip" onclick="quickAsk('더 깊은 내면을 끌어내는 핵심 질문 3가지 뽑아줘')">🎯 심층 질문 요청</button>
+                    <button class="chip" onclick="quickAsk('에니어그램 9번 성향 내담자 특징 알려줘')">🔍 에니어그램 9번</button>
+                    <button class="chip" onclick="quickAsk('에니어그램 4번 성향 내담자 특징 알려줘')">🔍 에니어그램 4번</button>
                 </div>
                 
                 <div class="chat-messages" id="chatBox">
@@ -114,7 +115,6 @@
 </div>
 
 <script>
-// 고품질 샘플 데이터베이스
 const itemsData = [
     {
         s1: "큰 사고나 이슈 없이 매일의 일과를 일정하게 유지하며 굴러가게 만드는 것은 정말 큰 장점입니다.",
@@ -163,24 +163,37 @@ function handleUserChat() {
 
     if(!text) return;
 
-    // 사용자 메시지 추가
     chatBox.innerHTML += `<div class="msg user">${text}</div>`;
     inputEl.value = '';
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    // 고퀄리티 지능형 시뮬레이션 응답 생성
     setTimeout(() => {
         let reply = "";
         const lower = text.toLowerCase();
 
-        if (lower.includes("방어") || lower.includes("저항")) {
+        // 1. 에니어그램 9번 관련 키워드 감지
+        if (lower.includes("9번") || lower.includes("아홉")) {
+            reply = `🔍 <b>[에니어그램 9번 유형 슈퍼비전 코칭]</b><br>• <strong>핵심 특징:</strong> 평화를 최우선으로 여기고 갈등을 회피하며, 타인에게 맞춰주느라 자신의 진짜 욕구를 억누르기 쉽습니다[cite: 5].<br>• <strong>상담 팁:</strong> "괜찮다"고 말 뒤에 숨겨진 진짜 불편함을 부드럽게 끄집어내 주시고, 작은 결정을 스스로 내릴 수 있도록 지지해 주세요.`;
+        } 
+        // 2. 에니어그램 4번 관련 키워드 감지
+        else if (lower.includes("4번") || lower.includes("네번")) {
+            reply = `🔍 <b>[에니어그램 4번 유형 슈퍼비전 코칭]</b><br>• <strong>핵심 특징:</strong> 깊은 내면의 독창성과 감정을 중시하며, 타인과 다른 결핍감이나 소외감을 자주 느낍니다.<br>• <strong>상담 팁:</strong> 남들과 비교하는 시선에서 벗어나 내담자만의 고유한 감정과 상처를 예술가처럼 섬세하게 인정하고 명명해 주는 접근이 효과적입니다.`;
+        } 
+        // 3. 방어/저항 관련
+        else if (lower.includes("방어") || lower.includes("저항") || lower.includes("경계")) {
             reply = `🛡️ <b>[슈퍼비전: 저항 다루기 코칭]</b><br>내담자가 방어적인 태도를 보일 때는 내용을 파고들기보다 <u>"이렇게 방어벽을 세울 수밖에 없었던 수고와 이유"</u>를 먼저 인정해 주어야 합니다. "그렇게 철저하게 방어하지 않으면 마음이 무너질 것 같았겠네요"라고 속도를 맞춰주세요.`;
-        } else if (lower.includes("공감") || lower.includes("멘트")) {
+        } 
+        // 4. 공감 관련
+        else if (lower.includes("공감") || lower.includes("멘트") || lower.includes("말씀")) {
             reply = `🗣️ <b>[슈퍼비전: 공감 멘트 추천]</b><br>• "그동안 누구에게도 내색 못 하고 혼자서 이 모든 무게를 감당하느라 참 애썼다"고 존재 자체를 다독여주세요.<br>• 판단이나 조언보다는 <strong>"그 마음이 참 무거웠겠습니다"</strong>라는 감정 거울링이 효과적입니다.`;
-        } else if (lower.includes("질문") || lower.includes("심층")) {
+        } 
+        // 5. 질문 관련
+        else if (lower.includes("질문") || lower.includes("심층") || lower.includes("물어")) {
             reply = `🎯 <b>[슈퍼비전: 추가 심층 질문 3선]</b><br>1. "만약 이 가면이나 역할을 오늘 당장 내려놓는다면, 가장 먼저 마주하게 될 감정은 무엇인가요?"<br>2. "이런 짐을 혼자 짊어지게 만든 최초의 기억이나 경험은 언제인가요?"<br>3. "주변 사람들에게 완벽하지 않은 내 모습을 보여준다면 어떤 일이 생길까 두려우신가요?"`;
-        } else {
-            reply = `💡 <b>[AI 슈퍼바이저 심층 피드백]</b><br>상담사님의 말씀("<em>${text}</em>")을 들으니 내담자의 숨겨진 무의식적 방어기제가 느껴집니다. 표면적인 문제 해결보다는 내담자가 그 행동을 통해 얻으려 했던 <strong>'1차적 이득(인정, 두려움 회피 등)'</strong>을 부드럽게 대화면 위로 끌어올려 주는 접근을 추천합니다.`;
+        } 
+        // 6. 그 외 일반 입력에 대한 다채로운 반응
+        else {
+            reply = `💡 <b>[AI 슈퍼바이저 심층 피드백]</b><br>상담사님께서 말씀해주신 "<em>${text}</em>" 관점은 내담자를 입체적으로 이해하는 데 매우 중요한 실마리입니다. 겉으로 드러난 행동 이면에 숨겨진 내담자의 <strong>핵심 욕구와 두려움</strong>이 무엇인지 꼬리 질문을 통해 넌지시 탐색해 보세요.`;
         }
 
         chatBox.innerHTML += `<div class="msg ai">${reply}</div>`;
