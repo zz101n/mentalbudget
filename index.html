@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[상담사 전용] 마음 영수증 심층 상담 대시보드 + AI 채팅</title>
+    <title>[상담사 전용] 마음 영수증 심층 상담 대시보드 (임시 AI 실습)</title>
     <style>
         :root {
             --primary-color: #3b82f6;
@@ -25,7 +25,6 @@
         header h1 { font-size: 1.8rem; color: #1e3a8a; margin-bottom: 8px; }
         header p { color: var(--text-sub); font-size: 0.95rem; }
 
-        /* 사용자 로그인 바 */
         .user-bar { position: absolute; right: 20px; top: 20px; display: flex; gap: 8px; align-items: center; font-size: 0.9rem; }
         .user-bar input { padding: 6px 10px; border: 1px solid var(--border-color); border-radius: 6px; }
         .user-bar button { padding: 6px 12px; background: var(--primary-color); color: white; border: none; border-radius: 6px; cursor: pointer; }
@@ -65,7 +64,7 @@
         .question-list li { margin-bottom: 6px; padding-left: 18px; position: relative; }
         .question-list li::before { content: "•"; position: absolute; left: 0; color: #10b981; font-weight: bold; }
 
-        /* 제미나이 AI 채팅 영역 스타일 */
+        /* 임시 AI 채팅 영역 스타일 */
         .ai-chat-section { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; margin-top: 10px; }
         .ai-chat-title { font-weight: 700; font-size: 1rem; color: #1e3a8a; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .chat-box { height: 180px; overflow-y: auto; background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -75,8 +74,6 @@
         .chat-input-row { display: flex; gap: 8px; }
         .chat-input-row input { flex: 1; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; }
         .chat-input-row button { padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
-        .api-key-box { margin-bottom: 15px; font-size: 0.85rem; display: flex; gap: 8px; align-items: center; background: #fffbeb; padding: 8px; border-radius: 6px; border: 1px solid #fde68a; }
-        .api-key-box input { flex: 1; padding: 4px 8px; border: 1px solid #cbd5e1; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -84,7 +81,7 @@
 <div class="container">
     <header>
         <h1>📊 [상담사 전용] 심층 상담 연계 대시보드</h1>
-        <p>14개 마음 영수증 지불 항목별 3단계 개입 스크립트 및 제미나이 AI 실습 도우미</p>
+        <p>14개 마음 영수증 지불 항목별 3단계 개입 스크립트 및 임시 AI 시뮬레이터</p>
         <div class="user-bar">
             <span id="userDisplay">상담사: <b>게스트</b></span>
             <input type="text" id="usernameInput" placeholder="이름 입력" style="width: 100px;">
@@ -148,7 +145,7 @@ const data = [
         id: 6, category: "개인/일상", title: "6. 먹고 싶은 것 먹고 사고 싶은 것 사는 삶",
         step1: "나에게 주어진 예산 안에서 또는 내가 번 돈으로 먹고 싶은 것, 필요한 것을 사며 일상을 누리는 것은 나를 격려하는 솔직하고 건강한 보상 방식입니다.",
         step2: "하지만 이 소비와 물질적 만족이 혹시 마음 한구석 진짜 허기나 스트레스, 허전함을 잠시 채우기 위한 '충동적 대치물'은 아니었는지 돌아볼 필요가 있어요.",
-        step3: ["원하는 것을 사고 먹은 직후, 마음이 진짜 든든하게 채워지시나요 아니면 이내 죄책감이나 공허함이 찾아오나요?", "소비나 음식으로 달래려고 했던 내 마음속 '진짜 결핍이나 피로'는 무엇이었을까요?", "최근 스트레스나 정서적 피로감이 극에 달했을 때, 계획에 없던 충동 지출이나 과소비를 하고 나서 후회했던 순간이 있었나요?"]
+        step3: ["원하는 것을 사고 먹은 직후, 마음이 진짜 든든하게 채워지시나요 아니면 이내 죄책감이나 공허함이 찾아오나요?", "소비나 음식으로 달래려고 했던 내 마음속 '진짜 결핍이나 피로'는 무엇이었을까요?"]
     },
     {
         id: 7, category: "개인/일상", title: "7. 하루가 끝나고 술집, 게임, OTT로 보내는 시간",
@@ -160,7 +157,7 @@ const data = [
         id: 8, category: "개인/일상", title: "8. 누구도 만나지 않고 혼자 쉬는 주말",
         step1: "혼자만의 공간에서 조용히 내 시간을 누리는 것 역시 지친 마음의 균형을 되찾아주는 하나의 재충전 방법입니다.",
         step2: "그러나 주말마다 세상과 단절한 채 고립을 선택하는 이유가, 평일에 사람들과 나누는 관계에서 내 에너지가 과도하게 고갈되었기 때문은 아닐까요?",
-        step3: ["평일에 사람들과의 관계에서 내가 가장 크게 소모하고 있는 마음 에너지는 무엇인가요?", "주말이 다 지나고 다시 사람들을 만나러 나가는 일상이 기대되고 가벼워지시나요, 아니면 막막하고 부담스럽우신가요?"]
+        step3: ["평일에 사람들과의 관계에서 내가 가장 크게 소모하고 있는 마음 에너지는 무엇인가요?", "주말이 다 지나고 다시 사람들을 만나러 나가는 일상이 기대되고 가벼워지시나요, 아니면 막막하고 부담스러우신가요?"]
     },
     {
         id: 9, category: "이미지/역할", title: "9. 남들 보기에 갓생 살고 잘 지내는 모습",
@@ -273,85 +270,54 @@ function renderDetail() {
             </div>
         </div>
 
-        <!-- 제미나이 AI 채팅 시뮬레이터 섹션 -->
+        <!-- 임시 AI 시뮬레이터 섹션 (API 키 불필요) -->
         <div class="ai-chat-section">
             <div class="ai-chat-title">
-                <span>💬 [AI 내담자/슈퍼바이저 시뮬레이션]</span>
+                <span>💬 [임시 AI 내담자/슈퍼바이저 시뮬레이션]</span>
                 <span style="font-size:0.75rem; color:#64748b;">현재 상담사: ${currentCounselor}</span>
-            </div>
-            
-            <div class="api-key-box">
-                <label>Gemini API Key:</label>
-                <input type="password" id="apiKeyInput" placeholder="AI Studio에서 발급받은 키 입력">
             </div>
 
             <div class="chat-box" id="chatBox">
-                <div class="chat-msg ai">안녕하세요, 상담사님! 현재 선택된 "${item.title}" 주제에 대해 궁금한 점을 물어보시거나, AI 내담자 역할을 요청해 주세요.</div>
+                <div class="chat-msg ai">안녕하세요, 상담사님! 현재 선택하신 "${item.title}" 항목에 대해 무엇이든 물어보세요. (이 대화는 브라우저 창을 닫으면 사라집니다)</div>
             </div>
 
             <div class="chat-input-row">
-                <input type="text" id="chatInput" placeholder="예: 이 항목에 공감하는 예시 대사를 더 짜줘" onkeypress="if(event.key==='Enter') sendToGemini()">
-                <button onclick="sendToGemini()">전송</button>
+                <input type="text" id="chatInput" placeholder="예: 이 항목에 대해 내담자가 저항을 보일 때 멘트 추천해줘" onkeypress="if(event.key==='Enter') sendMockAI()">
+                <button onclick="sendMockAI()">전송</button>
             </div>
         </div>
     `;
 }
 
-async function sendToGemini() {
-    const apiKey = document.getElementById('apiKeyInput').value.trim();
+// API 없이 즉시 반응하는 임시 AI 시뮬레이터 함수
+function sendMockAI() {
     const inputField = document.getElementById('chatInput');
     const chatBox = document.getElementById('chatBox');
     const userText = inputField.value.trim();
 
-    if (!apiKey) {
-        alert("상단에 Gemini API Key를 입력해주세요!");
-        return;
-    }
     if (!userText) return;
 
-    // 사용자 메시지 화면에 추가
+    // 사용자 메시지 추가
     chatBox.innerHTML += `<div class="chat-msg user"><b>${currentCounselor}</b>: ${userText}</div>`;
     inputField.value = '';
     chatBox.scrollTop = chatBox.scrollHeight;
 
     const item = data.find(i => i.id === currentSelectedId);
 
-    // 프롬프트 구성 (현재 선택된 상담 가이드 내용 포함)
-    const systemContext = `
-        당신은 심리 상담 수퍼바이저이자 유능한 AI 어시스턴트입니다.
-        현재 상담사가 보고 있는 '마음 영수증' 심층 상담 주제는 다음과 같습니다:
-        - 카테고리: ${item.category}
-        - 항목명: ${item.title}
-        - 1단계(공감): ${item.step1}
-        - 2단계(동전의 뒷면): ${item.step2}
-        - 3단계(꼬리질문): ${item.step3.join(" / ")}
+    // 0.8초 뒤에 자연스러운 임시 슈퍼바이저 답변 출력
+    setTimeout(() => {
+        let mockReply = "";
+        if (userText.includes("공감") || userText.includes("멘트")) {
+            mockReply = `[슈퍼비전] "${item.title}" 항목은 공감 단계에서 내담자의 수고를 구체적으로 짚어주는 것이 핵심입니다. "${item.step1}" 멘트를 활용하면서 목소리 톤을 차분하게 유지해 보세요.`;
+        } else if (userText.includes("질문") || userText.includes("꼬리")) {
+            mockReply = `[슈퍼비전] 3단계 꼬리 질문인 "${item.step3[0]}"을 던질 때는 내담자가 방어적인 태도를 보일 수 있으니, "조금 어렵겠지만 마음속 이야기를 들려주세요"라는 수용적 태도를 곁들여보세요.`;
+        } else {
+            mockReply = `[임시 AI 응답] 상담사님의 질문( "${userText}" )에 대해 현재 선택된 [${item.title}] 맥락을 고려할 때, 내담자의 내면 결핍과 방어기제를 부드럽게 직면하도록 유도하는 접근이 좋습니다.`;
+        }
 
-        위 맥락을 바탕으로 상담사의 질문에 전문적이고 따뜻한 톤으로 한국어로 답변해주세요.
-    `;
-
-    const api_url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-
-    try {
-        const response = await fetch(api_url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                contents: [
-                    { parts: [{ text: systemContext + "\n\n상담사의 질문/요청: " + userText }] }
-                ]
-            })
-        });
-
-        const result = await response.json();
-        const aiReply = result.candidates?.[0]?.content?.parts?.[0]?.text || "답변을 생성하지 못했습니다.";
-
-        chatBox.innerHTML += `<div class="chat-msg ai"><b>AI 슈퍼바이저</b>: ${aiReply}</div>`;
+        chatBox.innerHTML += `<div class="chat-msg ai"><b>AI 슈퍼바이저</b>: ${mockReply}</div>`;
         chatBox.scrollTop = chatBox.scrollHeight;
-
-    } catch (error) {
-        console.error(error);
-        chatBox.innerHTML += `<div class="chat-msg ai" style="color:red;">통신 오류가 발생했습니다. API 키를 확인해주세요.</div>`;
-    }
+    }, 800);
 }
 
 function filterCategory(cat) {
