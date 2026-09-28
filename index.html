@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[상담사 전용] 마음 영수증 심층 상담 대시보드</title>
+    <title>[상담사 전용] 마음 영수증 심층 상담 대시보드 + AI 채팅</title>
     <style>
         :root {
             --primary-color: #3b82f6;
@@ -21,9 +21,14 @@
         body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 20px; }
         .container { max-width: 1200px; margin: 0 auto; }
         
-        header { text-align: center; margin-bottom: 30px; padding: 20px 0; background: var(--card-bg); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        header { text-align: center; margin-bottom: 20px; padding: 20px 0; background: var(--card-bg); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: relative; }
         header h1 { font-size: 1.8rem; color: #1e3a8a; margin-bottom: 8px; }
         header p { color: var(--text-sub); font-size: 0.95rem; }
+
+        /* 사용자 로그인 바 */
+        .user-bar { position: absolute; right: 20px; top: 20px; display: flex; gap: 8px; align-items: center; font-size: 0.9rem; }
+        .user-bar input { padding: 6px 10px; border: 1px solid var(--border-color); border-radius: 6px; }
+        .user-bar button { padding: 6px 12px; background: var(--primary-color); color: white; border: none; border-radius: 6px; cursor: pointer; }
 
         .controls { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
         .search-input { flex: 1; min-width: 250px; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.95rem; }
@@ -40,25 +45,38 @@
         .item-category { font-size: 0.75rem; font-weight: 700; color: #2563eb; text-transform: uppercase; margin-bottom: 4px; }
         .item-title { font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
 
-        .detail-view { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); padding: 28px; }
-        .detail-header { border-bottom: 2px solid var(--border-color); padding-bottom: 16px; margin-bottom: 24px; }
+        .detail-view { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); padding: 28px; display: flex; flex-direction: column; gap: 20px; }
+        .detail-header { border-bottom: 2px solid var(--border-color); padding-bottom: 16px; margin-bottom: 10px; }
         .detail-badge { display: inline-block; padding: 4px 10px; background: #e0e7ff; color: #3730a3; font-size: 0.8rem; font-weight: 700; border-radius: 6px; margin-bottom: 8px; }
         .detail-title { font-size: 1.4rem; font-weight: 700; color: #0f172a; }
 
-        .section-box { margin-bottom: 20px; padding: 20px; border-radius: 10px; border-left: 5px solid; }
+        .section-box { margin-bottom: 10px; padding: 16px; border-radius: 10px; border-left: 5px solid; }
         .sec-1 { background-color: var(--accent-1); border-color: #3b82f6; }
         .sec-2 { background-color: var(--accent-2); border-color: #ef4444; }
         .sec-3 { background-color: var(--accent-3); border-color: #10b981; }
 
-        .sec-title { font-weight: 700; font-size: 1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .sec-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
         .sec-1 .sec-title { color: #1d4ed8; }
         .sec-2 .sec-title { color: #b91c1c; }
         .sec-3 .sec-title { color: #047857; }
 
-        .sec-content { font-size: 0.98rem; color: #334155; white-space: pre-line; }
+        .sec-content { font-size: 0.92rem; color: #334155; white-space: pre-line; }
         .question-list { list-style-type: none; padding-left: 0; }
-        .question-list li { margin-bottom: 10px; padding-left: 18px; position: relative; }
+        .question-list li { margin-bottom: 6px; padding-left: 18px; position: relative; }
         .question-list li::before { content: "•"; position: absolute; left: 0; color: #10b981; font-weight: bold; }
+
+        /* 제미나이 AI 채팅 영역 스타일 */
+        .ai-chat-section { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; margin-top: 10px; }
+        .ai-chat-title { font-weight: 700; font-size: 1rem; color: #1e3a8a; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-box { height: 180px; overflow-y: auto; background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .chat-msg { font-size: 0.88rem; padding: 8px 12px; border-radius: 8px; max-width: 80%; }
+        .chat-msg.user { background: #dbeafe; align-self: flex-end; color: #1e3a8a; }
+        .chat-msg.ai { background: #f1f5f9; align-self: flex-start; color: #334155; }
+        .chat-input-row { display: flex; gap: 8px; }
+        .chat-input-row input { flex: 1; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; }
+        .chat-input-row button { padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .api-key-box { margin-bottom: 15px; font-size: 0.85rem; display: flex; gap: 8px; align-items: center; background: #fffbeb; padding: 8px; border-radius: 6px; border: 1px solid #fde68a; }
+        .api-key-box input { flex: 1; padding: 4px 8px; border: 1px solid #cbd5e1; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -66,7 +84,12 @@
 <div class="container">
     <header>
         <h1>📊 [상담사 전용] 심층 상담 연계 대시보드</h1>
-        <p>14개 마음 영수증 지불 항목별 3단계 개입 스크립트 및 꼬리 질문 가이드</p>
+        <p>14개 마음 영수증 지불 항목별 3단계 개입 스크립트 및 제미나이 AI 실습 도우미</p>
+        <div class="user-bar">
+            <span id="userDisplay">상담사: <b>게스트</b></span>
+            <input type="text" id="usernameInput" placeholder="이름 입력" style="width: 100px;">
+            <button onclick="changeUser()">변경</button>
+        </div>
     </header>
 
     <div class="controls">
@@ -137,7 +160,7 @@ const data = [
         id: 8, category: "개인/일상", title: "8. 누구도 만나지 않고 혼자 쉬는 주말",
         step1: "혼자만의 공간에서 조용히 내 시간을 누리는 것 역시 지친 마음의 균형을 되찾아주는 하나의 재충전 방법입니다.",
         step2: "그러나 주말마다 세상과 단절한 채 고립을 선택하는 이유가, 평일에 사람들과 나누는 관계에서 내 에너지가 과도하게 고갈되었기 때문은 아닐까요?",
-        step3: ["평일에 사람들과의 관계에서 내가 가장 크게 소모하고 있는 마음 에너지는 무엇인가요?", "주말이 다 지나고 다시 사람들을 만나러 나가는 일상이 기대되고 가벼워지시나요, 아니면 막막하고 부담스러우신가요?"]
+        step3: ["평일에 사람들과의 관계에서 내가 가장 크게 소모하고 있는 마음 에너지는 무엇인가요?", "주말이 다 지나고 다시 사람들을 만나러 나가는 일상이 기대되고 가벼워지시나요, 아니면 막막하고 부담스럽우신가요?"]
     },
     {
         id: 9, category: "이미지/역할", title: "9. 남들 보기에 갓생 살고 잘 지내는 모습",
@@ -179,6 +202,17 @@ const data = [
 
 let currentFilter = 'ALL';
 let currentSelectedId = 1;
+let currentCounselor = '게스트';
+
+function changeUser() {
+    const val = document.getElementById('usernameInput').value.trim();
+    if (val) {
+        currentCounselor = val;
+        document.getElementById('userDisplay').innerHTML = `상담사: <b>${currentCounselor}</b>`;
+        document.getElementById('usernameInput').value = '';
+        alert(`${currentCounselor} 상담사님 계정으로 전환되었습니다.`);
+    }
+}
 
 function renderList() {
     const listEl = document.getElementById('itemList');
@@ -238,7 +272,86 @@ function renderDetail() {
                 <ul class="question-list">${qListHtml}</ul>
             </div>
         </div>
+
+        <!-- 제미나이 AI 채팅 시뮬레이터 섹션 -->
+        <div class="ai-chat-section">
+            <div class="ai-chat-title">
+                <span>💬 [AI 내담자/슈퍼바이저 시뮬레이션]</span>
+                <span style="font-size:0.75rem; color:#64748b;">현재 상담사: ${currentCounselor}</span>
+            </div>
+            
+            <div class="api-key-box">
+                <label>Gemini API Key:</label>
+                <input type="password" id="apiKeyInput" placeholder="AI Studio에서 발급받은 키 입력">
+            </div>
+
+            <div class="chat-box" id="chatBox">
+                <div class="chat-msg ai">안녕하세요, 상담사님! 현재 선택된 "${item.title}" 주제에 대해 궁금한 점을 물어보시거나, AI 내담자 역할을 요청해 주세요.</div>
+            </div>
+
+            <div class="chat-input-row">
+                <input type="text" id="chatInput" placeholder="예: 이 항목에 공감하는 예시 대사를 더 짜줘" onkeypress="if(event.key==='Enter') sendToGemini()">
+                <button onclick="sendToGemini()">전송</button>
+            </div>
+        </div>
     `;
+}
+
+async function sendToGemini() {
+    const apiKey = document.getElementById('apiKeyInput').value.trim();
+    const inputField = document.getElementById('chatInput');
+    const chatBox = document.getElementById('chatBox');
+    const userText = inputField.value.trim();
+
+    if (!apiKey) {
+        alert("상단에 Gemini API Key를 입력해주세요!");
+        return;
+    }
+    if (!userText) return;
+
+    // 사용자 메시지 화면에 추가
+    chatBox.innerHTML += `<div class="chat-msg user"><b>${currentCounselor}</b>: ${userText}</div>`;
+    inputField.value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    const item = data.find(i => i.id === currentSelectedId);
+
+    // 프롬프트 구성 (현재 선택된 상담 가이드 내용 포함)
+    const systemContext = `
+        당신은 심리 상담 수퍼바이저이자 유능한 AI 어시스턴트입니다.
+        현재 상담사가 보고 있는 '마음 영수증' 심층 상담 주제는 다음과 같습니다:
+        - 카테고리: ${item.category}
+        - 항목명: ${item.title}
+        - 1단계(공감): ${item.step1}
+        - 2단계(동전의 뒷면): ${item.step2}
+        - 3단계(꼬리질문): ${item.step3.join(" / ")}
+
+        위 맥락을 바탕으로 상담사의 질문에 전문적이고 따뜻한 톤으로 한국어로 답변해주세요.
+    `;
+
+    const api_url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+
+    try {
+        const response = await fetch(api_url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [
+                    { parts: [{ text: systemContext + "\n\n상담사의 질문/요청: " + userText }] }
+                ]
+            })
+        });
+
+        const result = await response.json();
+        const aiReply = result.candidates?.[0]?.content?.parts?.[0]?.text || "답변을 생성하지 못했습니다.";
+
+        chatBox.innerHTML += `<div class="chat-msg ai"><b>AI 슈퍼바이저</b>: ${aiReply}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+    } catch (error) {
+        console.error(error);
+        chatBox.innerHTML += `<div class="chat-msg ai" style="color:red;">통신 오류가 발생했습니다. API 키를 확인해주세요.</div>`;
+    }
 }
 
 function filterCategory(cat) {
