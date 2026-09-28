@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[상담사 전용] 마음 영수증 심층 상담 대시보드</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #475569;
+            --border-color: #e2e8f0;
+            --accent-1: #eff6ff;
+            --accent-2: #fef2f2;
+            --accent-3: #f0fdf4;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        header { text-align: center; margin-bottom: 30px; padding: 20px 0; background: var(--card-bg); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        header h1 { font-size: 1.8rem; color: #1e3a8a; margin-bottom: 8px; }
+        header p { color: var(--text-sub); font-size: 0.95rem; }
+
+        .controls { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+        .search-input { flex: 1; min-width: 250px; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.95rem; }
+        .filter-btn { padding: 10px 18px; border: 1px solid var(--border-color); background: var(--card-bg); border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: var(--text-sub); transition: all 0.2s; }
+        .filter-btn.active, .filter-btn:hover { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+        .dashboard-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; }
+        @media (max-width: 868px) { .dashboard-grid { grid-template-columns: 1fr; } }
+
+        .item-list { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); max-height: 750px; overflow-y: auto; }
+        .item-card { padding: 16px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; }
+        .item-card:hover { background: #f1f5f9; }
+        .item-card.selected { background: #dbeafe; border-left: 4px solid var(--primary-color); }
+        .item-category { font-size: 0.75rem; font-weight: 700; color: #2563eb; text-transform: uppercase; margin-bottom: 4px; }
+        .item-title { font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
+
+        .detail-view { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); padding: 28px; }
+        .detail-header { border-bottom: 2px solid var(--border-color); padding-bottom: 16px; margin-bottom: 24px; }
+        .detail-badge { display: inline-block; padding: 4px 10px; background: #e0e7ff; color: #3730a3; font-size: 0.8rem; font-weight: 700; border-radius: 6px; margin-bottom: 8px; }
+        .detail-title { font-size: 1.4rem; font-weight: 700; color: #0f172a; }
+
+        .section-box { margin-bottom: 20px; padding: 20px; border-radius: 10px; border-left: 5px solid; }
+        .sec-1 { background-color: var(--accent-1); border-color: #3b82f6; }
+        .sec-2 { background-color: var(--accent-2); border-color: #ef4444; }
+        .sec-3 { background-color: var(--accent-3); border-color: #10b981; }
+
+        .sec-title { font-weight: 700; font-size: 1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .sec-1 .sec-title { color: #1d4ed8; }
+        .sec-2 .sec-title { color: #b91c1c; }
+        .sec-3 .sec-title { color: #047857; }
+
+        .sec-content { font-size: 0.98rem; color: #334155; white-space: pre-line; }
+        .question-list { list-style-type: none; padding-left: 0; }
+        .question-list li { margin-bottom: 10px; padding-left: 18px; position: relative; }
+        .question-list li::before { content: "•"; position: absolute; left: 0; color: #10b981; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>📊 [상담사 전용] 심층 상담 연계 대시보드</h1>
+        <p>14개 마음 영수증 지불 항목별 3단계 개입 스크립트 및 꼬리 질문 가이드</p>
+    </header>
+
+    <div class="controls">
+        <input type="text" id="searchInput" class="search-input" placeholder="항목명 또는 키워드 검색...">
+        <button class="filter-btn active" onclick="filterCategory('ALL')">전체보기</button>
+        <button class="filter-btn" onclick="filterCategory('직장/업무')">직장/업무</button>
+        <button class="filter-btn" onclick="filterCategory('대인관계/소속')">대인관계/소속</button>
+        <button class="filter-btn" onclick="filterCategory('개인/일상')">개인/일상</button>
+        <button class="filter-btn" onclick="filterCategory('이미지/역할')">이미지/역할</button>
+        <button class="filter-btn" onclick="filterCategory('마음 상태')">마음 상태</button>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="item-list" id="itemList"></div>
+        <div class="detail-view" id="detailView">
+            <div style="text-align: center; color: #94a3b8; padding: 100px 0;">
+                좌측 리스트에서 항목을 선택하면 심층 상담 스크립트가 나타납니다.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const data = [
+    {
+        id: 1, category: "직장/업무", title: "1. 적당히 굴러가는 회사/학교 생활",
+        step1: "큰 사고나 이슈 없이 매일의 일과를 일정하게 유지하며 굴러가게 만드는 것은 정말 큰 장점입니다.",
+        step2: "하지만 '적당히, 무탈하게'라는 형태를 유지하기 위해 속으로는 혹시 의욕이 꺾이거나 지루함, 혹은 무기력함을 느끼면서도 꾸역꾸역 버티고 계신 건 아닐까요?",
+        step3: ["이 무난한 일상 뒤에 숨겨진 진짜 내 마음의 에너지는 몇 %나 남아있다고 느껴지시나요?", "만약 이 무난함이 깨지거나 변화가 생긴다면 어떤 점이 가장 두려우신가요?"]
+    },
+    {
+        id: 2, category: "직장/업무", title: "2. 크게 구멍 나지 않는 일과 업무 처리",
+        step1: "어떤 일이 맡겨져도 구멍 내지 않고 깔끔하게 처리해내는 것은 주변에 신뢰감을 줄 수 있는 훌륭한 능력이고 자산입니다.",
+        step2: "하지만 남들에게 '실수 없는 사람'으로 보이기 위해 속으로는 늘 불안하고 스스로를 검열하며 긴장의 끈을 놓지 못해 피로가 쌓인 건 아닌지 걱정됩니다.",
+        step3: ["업무나 일과에서 작은 실수가 생겼을 때, 스스로에게 어떤 비난이나 채찍질을 하게 되시나요?", "실수나 구멍을 허용하지 않으려는 내 마음 밑바닥에는 어떤 두려움이 자리 잡고 있을까요?(예: 무능, 비난)"]
+    },
+    {
+        id: 3, category: "대인관계/소속", title: "3. 크게 마찰이나 트러블 없는 사이",
+        step1: "누군가와 모나지 않고 트러블 없이 평화로운 관계를 유지해 온 00님의 깊은 배려심들이 생각나네요.",
+        step2: "하지만 '마찰 없음'이라는 평화를 지키기 위해, 내가 느낀 서운함이나 속마음은 매번 꾹 눌러 담으며 혼자 참아온 것은 아닌가요?",
+        step3: ["관계의 평화를 위해 최근에 가장 크게 참고 넘겼던 00님의 진짜 기분이나 생각은 무엇이었나요?", "만약 내가 내 솔직한 감정을 드러낸다면 그 관계가 어떻게 될 것 같아 두려우신가요?"]
+    },
+    {
+        id: 4, category: "대인관계/소속", title: "4. 평범하게 유지되는 친구/조직 관계",
+        step1: "어디서든 겉돌지 않고 그룹이나 조직 안에서 원만하게 잘 어우러지는 것은 사회 생활에서 매우 큰 강점입니다.",
+        step2: "다만 다수 안에서 '평범한 소속감'을 유지하느라 내 진짜 개성이나 독특한 욕구는 숨긴 채, 타인의 눈치나 기분에 내 기준을 자꾸 맞추고 계신 건 아닐까요?",
+        step3: ["관계 속에서 남들의 기분을 맞추느라 정작 '나 자신의 기분'은 뒷전으로 밀려난 적이 많지 않으신가요?", "사람들과 함께 있을 때와 혼자 있을 때, 내 마음의 편안함은 어떻게 다른가요?"]
+    },
+    {
+        id: 5, category: "대인관계/소속", title: "5. 화목한 가족 관계",
+        step1: "가족 안에서 크게 갈등을 만들지 않고 화목함과 평온을 지켜내기 위해 노력해 오신 것은 가족에 대한 따뜻한 애정과 관심 덕분입니다.",
+        step2: "그러나 '화목한 집안'이라는 타이틀을 지키기 위해 착한 자녀/가족 역할을 해내느라, 정작 가족에게조차 내 진짜 상처나 힘듦을 숨기고 계시진 않나요?",
+        step3: ["가족들에게 내가 기대에 부응하는 모습을 보여주어야 한다는 부담감이 나를 압박한 적은 없었나요?", "가족 내에서 내가 짊어지고 있는 '정서적 짐'이 있다면 그것은 무엇인가요?"]
+    },
+    {
+        id: 6, category: "개인/일상", title: "6. 먹고 싶은 것 먹고 사고 싶은 것 사는 삶",
+        step1: "나에게 주어진 예산 안에서 또는 내가 번 돈으로 먹고 싶은 것, 필요한 것을 사며 일상을 누리는 것은 나를 격려하는 솔직하고 건강한 보상 방식입니다.",
+        step2: "하지만 이 소비와 물질적 만족이 혹시 마음 한구석 진짜 허기나 스트레스, 허전함을 잠시 채우기 위한 '충동적 대치물'은 아니었는지 돌아볼 필요가 있어요.",
+        step3: ["원하는 것을 사고 먹은 직후, 마음이 진짜 든든하게 채워지시나요 아니면 이내 죄책감이나 공허함이 찾아오나요?", "소비나 음식으로 달래려고 했던 내 마음속 '진짜 결핍이나 피로'는 무엇이었을까요?", "최근 스트레스나 정서적 피로감이 극에 달했을 때, 계획에 없던 충동 지출이나 과소비를 하고 나서 후회했던 순간이 있었나요?"]
+    },
+    {
+        id: 7, category: "개인/일상", title: "7. 하루가 끝나고 술집, 게임, OTT로 보내는 시간",
+        step1: "내가 좋아하는 자극적인 여가(술, 게임, 미디어)로 스트레스를 푸는 것은 지루하고 지친 일상을 버텨내는 환기가 되기도 합니다.",
+        step2: "다만 이 시간들이 내 지친 마음을 진짜 휴식하게 만드는 게 아니라, 힘든 현실이나 쓰린 감정을 직면하기 싫어 잠시 잊게하는 도피처로 쓰이고 있진 않나요?",
+        step3: ["모든 미디어나 자극을 끄고 오롯이 내 마음과 조용히 만날 때 어떤 느낌(외로움, 불안 등)이 들까 봐 자꾸 무언가를 찾게 되나요?", "이 여가 시간을 보내고 난 뒤, 다음 날 아침 내 마음이 진짜 충전되어 있나요?"]
+    },
+    {
+        id: 8, category: "개인/일상", title: "8. 누구도 만나지 않고 혼자 쉬는 주말",
+        step1: "혼자만의 공간에서 조용히 내 시간을 누리는 것 역시 지친 마음의 균형을 되찾아주는 하나의 재충전 방법입니다.",
+        step2: "그러나 주말마다 세상과 단절한 채 고립을 선택하는 이유가, 평일에 사람들과 나누는 관계에서 내 에너지가 과도하게 고갈되었기 때문은 아닐까요?",
+        step3: ["평일에 사람들과의 관계에서 내가 가장 크게 소모하고 있는 마음 에너지는 무엇인가요?", "주말이 다 지나고 다시 사람들을 만나러 나가는 일상이 기대되고 가벼워지시나요, 아니면 막막하고 부담스러우신가요?"]
+    },
+    {
+        id: 9, category: "이미지/역할", title: "9. 남들 보기에 갓생 살고 잘 지내는 모습",
+        step1: "남들 보기에 열정적이고 부지런하게 '갓생'을 살아가는 00님의 뛰어난 자기관리 능력과 열정, 꾸준함이 멋있습니다.",
+        step2: "하지만 남들에게 언제나 '갓생 사는 멋진 사람'으로 보이기 위해, 잠시 멈추거나 쉬는 것이 게으르고 뒤처지는 것처럼 느껴져 스스로를 끊임없이 채찍질하며 과부하를 주고 계신 건 아닌가요?",
+        step3: ["만약 남들에게 내가 '갓생'이 아닌 부족하고 나태한 모습을 있는 그대로 보여준다면 어떤 일이 일어날 것 같나요?", "내가 증명해 보이고 싶은 나의 멋진 모습 뒤에, 숨겨진 내 진짜 취약함은 무엇인가요?"]
+    },
+    {
+        id: 10, category: "이미지/역할", title: "10. 남에게 의지하지 않고 혼자 처리하는 모습",
+        step1: "남에게 의지하거나 부담을 주지 않고 내 문제를 스스로 해결하는 모습에서 깊은 독립심과 단단함이 느껴지네요.",
+        step2: "하지만 '남에게 짐이 되기 싫다'는 생각 때문에 정말 도움이 필요한 순간에도 마음의 문을 닫고 혼자 고립되어 버티고 계신 건 아닌가요?",
+        step3: ["누군가에게 내 부족함을 드러내고 도움을 청하는 것이 00님에게는 왜 그렇게 어렵게 느껴질까요?", "마음 한구석에 쌓여온 '나도 가끔은 누군가에게 편하게 기대고 싶다'는 마음을 얼마나 외면해 오셨나요?"]
+    },
+    {
+        id: 11, category: "이미지/역할", title: "11. 어디서든 내 몫은 확실히 해내는 모습",
+        step1: "주어진 역할과 임무를 끝까지 기꺼이 완수해내는 모습으로 주변 사람들에게 든든함과 신뢰를 주시네요.",
+        step2: "하지만 '해내야한다'는 압박감으로 스스로의 한계나 몸과 마음의 신호까지 무시하며 자신을 몰아세우고 계신 건 아닌가요?",
+        step3: ["주변에서는 '충분히 잘했다'고 말해주는데도, 내 안에서는 나에게 유독 엄격한 기준을 가지고 있진 않나요?", "‘할 일은 해야 한다’는 생각 때문에 최근 꾹꾹 누르고 지나쳤던 내 몸과 마음의 신호는 무엇이었나요?"]
+    },
+    {
+        id: 12, category: "이미지/역할", title: "12. 든든하게 중심을 잡는 모습",
+        step1: "흔들리는 상황에서도 중심을 잃지 않고 팀이나 조직의 중심을 잡아주시는 모습에서 리더로서의 깊은 신뢰와 책임감이 느껴지네요.",
+        step2: "하지만 늘 버팀목 역할을 하느라, 정작 내가 흔들리고 무너질 때 마음 편히 기대거나 약해질 수 있는 나의 안전지대를 잃어버리신 건 아닌가요?",
+        step3: ["남들에게는 든든한 버팀목이 되어주면서, 내가 진짜 힘들거나 무너질 때는 누구에게 마음을 털어놓으시나요?", "내가 이 리더라는 역할의 무게를 조금 내려놓으면, 조직이나 관계가 무너질까 봐 차마 손을 놓지 못하고 계신 건 아닌가요?"]
+    },
+    {
+        id: 13, category: "마음 상태", title: "13. 맛집 탐방, 카페 투어 등 일상의 소소한 행복",
+        step1: "크고 거창한 목표 대신 맛집이나 카페 투어처럼 일상 속 소소한 기쁨을 찾아 누릴 줄 아는 것은, 내 삶을 풍요롭게 만드는 매우 감각적이고 건강한 태도입니다.",
+        step2: "다만 이 소소한 즐거움들이 일상을 잠시 환기해 주는 것에 그치지 않고, 내 마음을 오롯이 채우는 '진짜 회복과 삶의 방향'으로 이어지고 있는지 돌아볼 필요는 있어요.",
+        step3: ["맛집이나 카페 투어로 기분을 전환하고 난 뒤, 다시 일상으로 돌아왔을 때 내 마음은 얼마나 충전되어 있나요?", "일상의 소소한 기쁨을 넘어서, 요즘 내 삶에서 진짜로 채우고 싶거나 방향을 바꾸고 싶은 부분은 무엇인가요?"]
+    },
+    {
+        id: 14, category: "마음 상태", title: "14. 남들과 비슷한 속도로 살고 있다는 안심",
+        step1: "세상의 흐름 속에서 남들과 고르게 어우러지며 무난한 속도를 유지하는 것은, 내 삶에 따뜻한 안정감과 소속감을 주는 중요한 부분입니다.",
+        step2: "하지만 '남들만큼은 하고 있다'는 안도감 뒤에, 혹시 새로운 도전이나 성장에 따르는 불편함을 피해 지금의 편안함에 안주하고 싶은 마음이 숨어있진 않나요?",
+        step3: ["'중간만 가자'는 마음 뒤에 숨겨두고 정작 내 안에서 진짜 시도해보고 싶었던 도전이나 꿈은 무엇이었나요?", "남들과 비슷한 속도라는 울타리 안에서 내 삶의 가능성이나 잠재력을 스스로 제한하고 계신 건 아닌가요?"]
+    }
+];
+
+let currentFilter = 'ALL';
+let currentSelectedId = 1;
+
+function renderList() {
+    const listEl = document.getElementById('itemList');
+    const searchVal = document.getElementById('searchInput').value.toLowerCase();
+    
+    listEl.innerHTML = '';
+    
+    data.filter(item => {
+        const matchFilter = currentFilter === 'ALL' || item.category === currentFilter;
+        const matchSearch = item.title.toLowerCase().includes(searchVal) || item.category.toLowerCase().includes(searchVal);
+        return matchFilter && matchSearch;
+    }).forEach(item => {
+        const card = document.createElement('div');
+        card.className = `item-card ${item.id === currentSelectedId ? 'selected' : ''}`;
+        card.onclick = () => selectItem(item.id);
+        card.innerHTML = `
+            <div class="item-category">${item.category}</div>
+            <div class="item-title">${item.title}</div>
+        `;
+        listEl.appendChild(card);
+    });
+}
+
+function selectItem(id) {
+    currentSelectedId = id;
+    renderList();
+    renderDetail();
+}
+
+function renderDetail() {
+    const item = data.find(i => i.id === currentSelectedId);
+    const detailEl = document.getElementById('detailView');
+
+    if (!item) return;
+
+    const qListHtml = item.step3.map(q => `<li>${q}</li>`).join('');
+
+    detailEl.innerHTML = `
+        <div class="detail-header">
+            <span class="detail-badge">${item.category}</span>
+            <h2 class="detail-title">${item.title}</h2>
+        </div>
+        
+        <div class="section-box sec-1">
+            <div class="sec-title">① 지출 인정 및 공감</div>
+            <div class="sec-content">${item.step1}</div>
+        </div>
+
+        <div class="section-box sec-2">
+            <div class="sec-title">② 동전의 뒷면 짚어주기</div>
+            <div class="sec-content">${item.step2}</div>
+        </div>
+
+        <div class="section-box sec-3">
+            <div class="sec-title">③ 깊이 있는 꼬리 질문</div>
+            <div class="sec-content">
+                <ul class="question-list">${qListHtml}</ul>
+            </div>
+        </div>
+    `;
+}
+
+function filterCategory(cat) {
+    currentFilter = cat;
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    renderList();
+}
+
+document.getElementById('searchInput').addEventListener('input', renderList);
+
+// 초깃값 로드
+renderList();
+renderDetail();
+</script>
+</body>
+</html>
