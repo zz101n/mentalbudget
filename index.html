@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[상담사 전용] 마음 영수증 심층 진단 대시보드</title>
+    <title>[상담사 전용] 마음 영수증 독립형 대시보드 (14가지 겉보기 & 12가지 지불항목)</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -20,27 +20,27 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; }
-        .container { max-width: 1500px; margin: 0 auto; }
+        .container { max-width: 1600px; margin: 0 auto; }
         
         header { text-align: center; margin-bottom: 24px; padding: 24px; background: var(--card); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         header h1 { font-size: 1.8rem; color: #1e3a8a; margin-bottom: 6px; }
         header p { color: var(--text-sub); font-size: 0.95rem; }
 
-        .dashboard-grid { display: grid; grid-template-columns: 320px 1fr 380px; gap: 20px; }
-        @media(max-width: 1200px) { .dashboard-grid { grid-template-columns: 1fr; } }
+        .dashboard-grid { display: grid; grid-template-columns: 350px 1fr 350px; gap: 20px; }
+        @media(max-width: 1300px) { .dashboard-grid { grid-template-columns: 1fr; } }
 
-        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; height: 850px; display: flex; flex-direction: column; }
-        .panel-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; color: #1e293b; }
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; height: 880px; display: flex; flex-direction: column; }
+        .panel-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; color: #1e293b; display: flex; justify-content: space-between; align-items: center; }
         
-        /* 좌측: 14개 겉보기 항목 리스트 */
-        .item-list { overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
-        .item-card { padding: 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; background: #fff; }
-        .item-card:hover { background: #f1f5f9; }
-        .item-card.selected { background: #dbeafe; border-color: var(--primary); }
-        .item-cat { font-size: 0.75rem; font-weight: 700; color: var(--primary); margin-bottom: 2px; }
-        .item-name { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+        /* 공통 리스트 스크롤 영역 */
+        .list-container { overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+        .list-card { padding: 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; background: #fff; }
+        .list-card:hover { background: #f1f5f9; }
+        .list-card.selected { background: #dbeafe; border-color: var(--primary); }
+        .card-cat { font-size: 0.75rem; font-weight: 700; color: var(--primary); margin-bottom: 2px; }
+        .card-name { font-size: 0.9rem; font-weight: 600; color: var(--text); }
 
-        /* 중앙: 12가지 지불항목 심층 진단 가이드 뷰 */
+        /* 중앙 상세 뷰 */
         .detail-view { overflow-y: auto; flex: 1; padding-right: 8px; display: flex; flex-direction: column; gap: 16px; }
         
         .section-box { padding: 16px; border-radius: 10px; border-left: 5px solid; margin-bottom: 12px; }
@@ -62,40 +62,70 @@
         .chat-input-area { display: flex; gap: 8px; }
         .chat-input-area input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; }
         .chat-input-area button { padding: 10px 16px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        
+        .toggle-btn { font-size: 0.8rem; padding: 4px 8px; background: #e2e8f0; border: none; border-radius: 4px; cursor: pointer; }
+        .toggle-btn.active { background: var(--primary); color: white; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>💼 [상담사 전용] 마음 영수증 심층 진단 가이드 대시보드</h1>
-        <p>좌측: 14가지 겉보기 항목 | 중앙: 12가지 마음 지불 항목 중심 심층 진단 가이드 원문 반영 | 우측: AI 슈퍼바이저</p>
+        <h1>💼 [상담사 전용] 마음 영수증 독립형 대시보드</h1>
+        <p>왼쪽: 14가지 겉보기 항목 스크립트 | 오른쪽: 12가지 마음 지불 항목 심층 진단 가이드 (독자적 구성)</p>
     </header>
 
     <div class="dashboard-grid">
-        <!-- 1. 좌측: 14가지 겉보기 항목 리스트 -->
+        <!-- 1. 좌측 패널: 14가지 겉보기 항목 리스트 및 스크립트 -->
         <div class="panel">
-            <div class="panel-title">📋 14가지 겉보기 항목 리스트</div>
-            <div class="item-list" id="itemList"></div>
-        </div>
-
-        <!-- 2. 중앙: 12가지 지불항목 심층 진단 가이드 상세 뷰 -->
-        <div class="panel">
-            <div class="panel-title" id="detailTitle">📖 12가지 지불항목 심층 진단 가이드</div>
-            <div class="detail-view" id="detailView">
-                <!-- 동적 로드 -->
+            <div class="panel-title">
+                <span>📋 14가지 겉보기 항목</span>
+                <span style="font-size:0.75rem; color:var(--text-sub);">클릭 시 스크립트 표시</span>
+            </div>
+            <div class="list-container" id="leftList"></div>
+            <div id="leftDetail" style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 12px; max-height: 250px; overflow-y: auto;">
+                <div style="font-size:0.85rem; color:#64748b;">좌측에서 항목을 선택하면 3단계 스크립트가 나타납니다.</div>
             </div>
         </div>
 
-        <!-- 3. 우측: AI 슈퍼바이저 코칭 채팅 -->
+        <!-- 2. 중앙 패널: 12가지 숨겨진 마음 지불 항목 중심의 심층 진단 가이드 -->
         <div class="panel">
-            <div class="panel-title">💬 AI 슈퍼바이저 코칭</div>
+            <div class="panel-title">
+                <span id="manualTitle">🔖 12가지 마음 지불 항목 심층 진단 가이드</span>
+                <button class="toggle-btn active" onclick="toggleManualList()">목록 보기</button>
+            </div>
+            <div id="manualSelectorContainer" style="margin-bottom: 10px;">
+                <select id="manualSelect" onchange="selectManual(this.value)" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem; font-weight: 600;">
+                    <option value="1">1. [좋은 게 좋은 거지 / 갈등이 싫어서 참고 넘기기]</option>
+                    <option value="2">2. [내가 다 안고 가야지, 알아서 해야지 / 과도한 책임감]</option>
+                    <option value="3">3. [마음의 문을 닫고 / 상처받기 싫어서 무감각해지기]</option>
+                    <option value="4">4. [안 바뀔 거라며 / 기대한 마음을 내려놓고 체념하고 살기]</option>
+                    <option value="5">5. [실패가 두려워 새로운 시작을 미루기]</option>
+                    <option value="6">6. [지루하고 버거운 현실에서 자극적인 것으로 도망가기]</option>
+                    <option value="7">7. [남들에게 잘 보이기 위해 내 감정/욕구를 숨기고 애쓰기]</option>
+                    <option value="8">8. [몸이 비명을 질러도 무시하고 그냥 밀어붙이기]</option>
+                    <option value="9">9. [남의 속도에 맞춰 나를 재단하고 비교하기]</option>
+                    <option value="10">10. [아무도 나를 이해 못 해 근본적인 외로움 속에 갇히기]</option>
+                    <option value="11">11. [문제가 생기면 항상 나에게 돌리며 자책하기]</option>
+                    <option value="12">12. [아직 오지 않은 일에 미리 걱정하며 에너지를 낭비하기]</option>
+                </select>
+            </div>
+            <div class="detail-view" id="manualDetailView">
+                <!-- 독자적 가이드 내용 동적 로드 -->
+            </div>
+        </div>
+
+        <!-- 3. 우측 패널: AI 슈퍼바이저 코칭 채팅 -->
+        <div class="panel">
+            <div class="panel-title">
+                <span>💬 AI 슈퍼바이저 코칭</span>
+            </div>
             <div style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 10px;">
-                선택된 겉보기 항목과 연결된 지불항목 매뉴얼 기반 코칭을 지원합니다.
+                상담 진행 중 필요한 코칭이나 저항 대처법을 실시간으로 물어보세요.
             </div>
             <div class="chat-container">
                 <div class="chat-messages" id="chatBox">
-                    <div class="msg ai">안녕하세요, 상담사님! 좌측에서 겉보기 항목을 선택하시면 해당 항목의 원문 스크립트와 연결된 12가지 지불항목 심층 진단 가이드를 확인하실 수 있습니다.</div>
+                    <div class="msg ai">안녕하세요, 상담사님! 독립적으로 구성된 14가지 겉보기 스크립트와 12가지 심층 지불항목 가이드를 활용해 멋진 상담을 진행해 보세요. 무엇이든 도와드리겠습니다.</div>
                 </div>
                 <div class="chat-input-area">
                     <input type="text" id="chatInput" placeholder="고민이나 질문을 입력하세요..." onkeypress="if(event.key==='Enter') sendChat()">
@@ -107,53 +137,25 @@
 </div>
 
 <script>
-// 14가지 겉보기 항목 + 12가지 지불항목 매뉴얼 데이터 매핑 (원문 수정 없음)
-const mappingData = [
-    {
-        id: 1, category: "직장/업무", title: "1. 적당히 굴러가는 회사/학교 생활", manualId: 1
-    },
-    {
-        id: 2, category: "직장/업무", title: "2. 크게 구멍 나지 않는 일과 업무 처리", manualId: 5
-    },
-    {
-        id: 3, category: "대인관계/소속", title: "3. 크게 마찰이나 트러블 없는 사이", manualId: 1
-    },
-    {
-        id: 4, category: "대인관계/소속", title: "4. 평범하게 유지되는 친구/조직 관계", manualId: 7
-    },
-    {
-        id: 5, category: "대인관계/소속", title: "5. 화목한 가족 관계", manualId: 2
-    },
-    {
-        id: 6, category: "개인/일상", title: "6. 먹고 싶은 것 먹고 사고 싶은 것 사는 삶", manualId: 6
-    },
-    {
-        id: 7, category: "개인/일상", title: "7. 하루가 끝나고 술집, 게임, OTT로 보내는 시간", manualId: 3
-    },
-    {
-        id: 8, category: "개인/일상", title: "8. 누구도 만나지 않고 혼자 쉬는 주말", manualId: 3
-    },
-    {
-        id: 9, category: "이미지/역할", title: "9. 남들 보기에 갓생 살고 잘 지내는 모습", manualId: 8
-    },
-    {
-        id: 10, category: "이미지/역할", title: "10. 남에게 의지하지 않고 혼자 처리하는 모습", manualId: 2
-    },
-    {
-        id: 11, category: "이미지/역할", title: "11. 어디서든 내 몫은 확실히 해내는 모습", manualId: 11
-    },
-    {
-        id: 12, category: "이미지/역할", title: "12. 든든하게 중심을 잡는 모습", manualId: 2
-    },
-    {
-        id: 13, category: "마음 상태", title: "13. 맛집 탐방, 카페 투어 등 일상의 소소한 행복", manualId: 4
-    },
-    {
-        id: 14, category: "마음 상태", title: "14. 남들과 비슷한 속도로 살고 있다는 안심", manualId: 9
-    }
+// 14가지 겉보기 항목 원문 데이터
+const apparentItems = [
+    { id: 1, category: "직장/업무", title: "1. 적당히 굴러가는 회사/학교 생활", s1: "큰 사고나 이슈 없이 매일의 일과를 일정하게 유지하며 굴러가게 만드는 것은 정말 큰 장점입니다.", s2: "하지만 '적당히, 무탈하게'라는 형태를 유지하기 위해 속으로는 혹시 의욕이 꺾이거나 지루함, 혹은 무기력함을 느끼면서도 꾸역꾸역 버티고 계신 건 아닐까요?", s3: "• \"이 무난한 일상 뒤에 숨겨진 진짜 내 마음의 에너지는 몇 %나 남아있다고 느껴지시나요?\"\n• \"만약 이 무난함이 깨지거나 변화가 생긴다면 어떤 점이 가장 두려우신가요?\"" },
+    { id: 2, category: "직장/업무", title: "2. 크게 구멍 나지 않는 일과 업무 처리", s1: "어떤 일이 맡겨져도 구멍 내지 않고 깔끔하게 처리해내는 것은 주변에 신뢰감을 줄 수 있는 훌륭한 능력이고 자산입니다.", s2: "하지만 남들에게 '실수 없는 사람'으로 보이기 위해 속으로는 늘 불안하고 스스로를 검열하며 긴장의 끈을 놓지 못해 피로가 쌓인 건 아닌지 걱정됩니다.", s3: "• \"업무나 일과에서 작은 실수가 생겼을 때, 스스로에게 어떤 비난이나 채찍질을 하게 되시나요?\"\n• \"실수나 구멍을 허용하지 않으려는 내 마음 밑바닥에는 어떤 두려움이 자리 잡고 있을까요?(예: 무능, 비난)\"" },
+    { id: 3, category: "대인관계/소속", title: "3. 크게 마찰이나 트러블 없는 사이", s1: "누군가와 모나지 않고 트러블 없이 평화로운 관계를 유지해 온 00님의 깊은 배려심들이 생각나네요.", s2: "하지만 '마찰 없음'이라는 평화를 지키기 위해, 내가 느낀 서운함이나 속마음은 매번 꾹 눌러 담으며 혼자 참아온 것은 아닌가요?", s3: "• \"관계의 평화를 위해 최근에 가장 크게 참고 넘겼던 00님의 진짜 기분이나 생각은 무엇이었나요?\"\n• \"만약 내가 내 솔직한 감정을 드러낸다면 그 관계가 어떻게 될 것 같아 두려우신가요?\"" },
+    { id: 4, category: "대인관계/소속", title: "4. 평범하게 유지되는 친구/조직 관계", s1: "어디서든 겉돌지 않고 그룹이나 조직 안에서 원만하게 잘 어우러지는 것은 사회 생활에서 매우 큰 강점입니다.", s2: "다만 다수 안에서 '평범한 소속감'을 유지하느라 내 진짜 개성이나 독특한 욕구는 숨긴 채, 타인의 눈치나 기분에 내 기준을 자꾸 맞추고 계신 건 아닐까요?", s3: "• \"관계 속에서 남들의 기분을 맞추느라 정작 '나 자신의 기분'은 뒷전으로 밀려난 적이 많지 않으신가요?\"\n• \"사람들과 함께 있을 때와 혼자 있을 때, 내 마음의 편안함은 어떻게 다른가요?\"" },
+    { id: 5, category: "대인관계/소속", title: "5. 화목한 가족 관계", s1: "가족 안에서 크게 갈등을 만들지 않고 화목함과 평온을 지켜내기 위해 노력해 오신 것은 가족에 대한 따뜻한 애정과 관심 덕분입니다.", s2: "그러나 '화목한 집안'이라는 타이틀을 지키기 위해 착한 자녀/가족 역할을 해내느라, 정작 가족에게조차 내 진짜 상처나 힘듦을 숨기고 계시진 않나요?", s3: "• \"가족들에게 내가 기대에 부응하는 모습을 보여주어야 한다는 부담감이 나를 압박한 적은 없었나요?\"\n• \"가족 내에서 내가 짊어지고 있는 '정서적 짐'이 있다면 그것은 무엇인가요?\"" },
+    { id: 6, category: "개인/일상", title: "6. 먹고 싶은 것 먹고 사고 싶은 것 사는 삶", s1: "나에게 주어진 예산 안에서 또는 내가 번 돈으로 먹고 싶은 것, 필요한 것을 사며 일상을 누리는 것은 나를 격려하는 솔직하고 건강한 보상 방식입니다.", s2: "하지만 이 소비와 물질적 만족이 혹시 마음 한구석 진짜 허기나 스트레스, 허전함을 잠시 채우기 위한 '충동적 대치물'은 아니었는지 돌아볼 필요가 있어요.", s3: "• \"원하는 것을 사고 먹은 직후, 마음이 진짜 든든하게 채워지시나요 아니면 이내 죄책감이나 공허함이 찾아오나요?\"\n• \"소비나 음식으로 달래려고 했던 내 마음속 '진짜 결핍이나 피로'는 무엇이었을까요?\"\n• \"최근 스트레스나 정서적 피로감이 극에 달했을 때, 계획에 없던 충동 지출이나 과소비를 하고 나서 후회했던 순간이 있었나요?\"" },
+    { id: 7, category: "개인/일상", title: "7. 하루가 끝나고 술집, 게임, OTT로 보내는 시간", s1: "내가 좋아하는 자극적인 여가(술, 게임, 미디어)로 스트레스를 푸는 것은 지루하고 지친 일상을 버텨내는 환기가 되기도 합니다.", s2: "다만 이 시간들이 내 지친 마음을 진짜 휴식하게 만드는 게 아니라, 힘든 현실이나 쓰린 감정을 직면하기 싫어 잠시 잊게하는 도피처로 쓰이고 있진 않나요?", s3: "• \"모든 미디어나 자극을 끄고 오롯이 내 마음과 조용히 만날 때 어떤 느낌(외로움, 불안 등)이 들까 봐 자꾸 무언가를 찾게 되나요?\"\n• \"이 여가 시간을 보내고 난 뒤, 다음 날 아침 내 마음이 진짜 충전되어 있나요?\"" },
+    { id: 8, category: "개인/일상", title: "8. 누구도 만나지 않고 혼자 쉬는 주말", s1: "혼자만의 공간에서 조용히 내 시간을 누리는 것 역시 지친 마음의 균형을 되찾아주는 하나의 재충전 방법입니다.", s2: "그러나 주말마다 세상과 단절한 채 고립을 선택하는 이유가, 평일에 사람들과 나누는 관계에서 내 에너지가 과도하게 고갈되었기 때문은 아닐까요?", s3: "• \"평일에 사람들과의 관계에서 내가 가장 크게 소모하고 있는 마음 에너지는 무엇인가요?\"\n• \"주말이 다 지나고 다시 사람들을 만나러 나가는 일상이 기대되고 가벼워지시나요, 아니면 막막하고 부담스러우신가요?\"" },
+    { id: 9, category: "이미지/역할", title: "9. 남들 보기에 갓생 살고 잘 지내는 모습", s1: "남들 보기에 열정적이고 부지런하게 '갓생'을 살아가는 00님의 뛰어난 자기관리 능력과 열정, 꾸준함이 멋있습니다.", s2: "하지만 남들에게 언제나 '갓생 사는 멋진 사람'으로 보이기 위해, 잠시 멈추거나 쉬는 것이 게으르고 뒤처지는 것처럼 느껴져 스스로를 끊임없이 채찍질하며 과부하를 주고 계신 건 아닌가요?", s3: "• \"만약 남들에게 내가 '갓생'이 아닌 부족하고 나태한 모습을 있는 그대로 보여준다면 어떤 일이 일어날 것 같나요?\"\n• \"내가 증명해 보이고 싶은 나의 멋진 모습 뒤에, 숨겨진 내 진짜 취약함은 무엇인가요?\"" },
+    { id: 10, category: "이미지/역할", title: "10. 남에게 의지하지 않고 혼자 처리하는 모습", s1: "남에게 의지하거나 부담을 주지 않고 내 문제를 스스로 해결하는 모습에서 깊은 독립심과 단단함이 느껴지네요.", s2: "하지만 '남에게 짐이 되기 싫다'는 생각 때문에 정말 도움이 필요한 순간에도 마음의 문을 닫고 혼자 고립되어 버티고 계신 건 아닌가요?", s3: "• \"누군가에게 내 부족함을 드러내고 도움을 청하는 것이 00님에게는 왜 그렇게 어렵게 느껴질까요?\"\n• \"마음 한구석에 쌓여온 '나도 가끔은 누군가에게 편하게 기대고 싶다'는 마음을 얼마나 외면해 오셨나요?\"" },
+    { id: 11, category: "이미지/역할", title: "11. 어디서든 내 몫은 확실히 해내는 모습", s1: "주어진 역할과 임무를 끝까지 기꺼이 완수해내는 모습으로 주변 사람들에게 든든함과 신뢰를 주시네요.", s2: "하지만 '해내야한다'는 압박감으로 스스로의 한계나 몸과 마음의 신호까지 무시하며 자신을 몰아세우고 계신 건 아닌가요?", s3: "• \"주변에서는 '충분히 잘했다'고 말해주는데도, 내 안에서는 나에게 유독 엄격한 기준을 가지고 있진 않나요?\"\n• \"‘할 일은 해야 한다’는 생각 때문에 최근 꾹꾹 누르고 지나쳤던 내 몸과 마음의 신호는 무엇이었나요?\"" },
+    { id: 12, category: "이미지/역할", title: "12. 든든하게 중심을 잡는 모습", s1: "흔들리는 상황에서도 중심을 잃지 않고 팀이나 조직의 중심을 잡아주시는 모습에서 리더로서의 깊은 신뢰와 책임감이 느껴지네요.", s2: "하지만 늘 버팀목 역할을 하느라, 정작 내가 흔들리고 무너질 때 마음 편히 기대거나 약해질 수 있는 나의 안전지대를 잃어버리신 건 아닌가요?", s3: "• \"남들에게는 든든한 버팀목이 되어주면서, 내가 진짜 힘들거나 무너질 때는 누구에게 마음을 털어놓으시나요?\"\n• \"내가 이 리더라는 역할의 무게를 조금 내려놓으면, 조직이나 관계가 무너질까 봐 차마 손을 놓지 못하고 계신 건 아닌가요?\"" },
+    { id: 13, category: "마음 상태", title: "13. 맛집 탐방, 카페 투어 등 일상의 소소한 행복", s1: "크고 거창한 목표 대신 맛집이나 카페 투어처럼 일상 속 소소한 기쁨을 찾아 누릴 줄 아는 것은, 내 삶을 풍요롭게 만드는 매우 감각적이고 건강한 태도입니다.", s2: "다만 이 소소한 즐거움들이 일상을 잠시 환기해 주는 것에 그치지 않고, 내 마음을 오롯이 채우는 '진짜 회복과 삶의 방향'으로 이어지고 있는지 돌아볼 필요는 있어요.", s3: "• \"맛집이나 카페 투어로 기분을 전환하고 난 뒤, 다시 일상으로 돌아왔을 때 내 마음은 얼마나 충전되어 있나요?\"\n• \"일상의 소소한 기쁨을 넘어서, 요즘 내 삶에서 진짜로 채우고 싶거나 방향을 바꾸고 싶은 부분은 무엇인가요?\"" },
+    { id: 14, category: "마음 상태", title: "14. 남들과 비슷한 속도로 살고 있다는 안심", s1: "세상의 흐름 속에서 남들과 고르게 어우러지며 무난한 속도를 유지하는 것은, 내 삶에 따뜻한 안정감과 소속감을 주는 중요한 부분입니다.", s2: "하지만 '남들만큼은 하고 있다'는 안도감 뒤에, 혹시 새로운 도전이나 성장에 따르는 불편함을 피해 지금의 편안함에 안주하고 싶은 마음이 숨어있진 않나요?", s3: "• \"'중간만 가자'는 마음 뒤에 숨겨두고 정작 내 안에서 진짜 시도해보고 싶었던 도전이나 꿈은 무엇이었나요?\"\n• \"남들과 비슷한 속도라는 울타리 안에서 내 삶의 가능성이나 잠재력을 스스로 제한하고 계신 건 아닌가요?\"" }
 ];
 
-// 12가지 지불항목 심층 진단 가이드 원문 데이터베이스 (수정 없음)
+// 12가지 마음 지불 항목 심층 진단 가이드 원문 데이터베이스 (수정 없음)
 const manualsData = {
     1: {
         title: "1. [좋은 게 좋은 거지 / 갈등이 싫어서 참고 넘기기]",
@@ -265,33 +267,102 @@ const manualsData = {
     }
 };
 
-let selectedId = 1;
+let selectedApparentId = 1;
+let selectedManualId = 1;
+let isManualListMode = false;
 
-function renderList() {
-    const listEl = document.getElementById('itemList');
+// 1. 좌측 14가지 겉보기 항목 리스트 렌더링
+function renderLeftList() {
+    const listEl = document.getElementById('leftList');
     listEl.innerHTML = '';
-    mappingData.forEach(item => {
+    apparentItems.forEach(item => {
         const div = document.createElement('div');
-        div.className = `item-card ${item.id === selectedId ? 'selected' : ''}`;
-        div.onclick = () => { selectedId = item.id; renderList(); renderDetail(); };
+        div.className = `list-card ${item.id === selectedApparentId ? 'selected' : ''}`;
+        div.onclick = () => { selectedApparentId = item.id; renderLeftList(); renderLeftDetail(); };
         div.innerHTML = `
-            <div class="item-cat">${item.category}</div>
-            <div class="item-name">${item.title}</div>
+            <div class="card-cat">${item.category}</div>
+            <div class="card-name">${item.title}</div>
         `;
         listEl.appendChild(div);
     });
 }
 
-function renderDetail() {
-    const mapping = mappingData.find(i => i.id === selectedId);
-    const manual = manualsData[mapping.manualId];
-    const detailEl = document.getElementById('detailView');
+function renderLeftDetail() {
+    const item = apparentItems.find(i => i.id === selectedApparentId);
+    const detailEl = document.getElementById('leftDetail');
+    detailEl.innerHTML = `
+        <div style="font-weight:700; font-size:0.9rem; color:#1e3a8a; margin-bottom:8px;">📌 ${item.title} 스크립트</div>
+        <div class="section-box sec-1" style="padding:10px; margin-bottom:6px;">
+            <div class="sec-title" style="font-size:0.85rem;">① 공감</div>
+            <div class="sec-content" style="font-size:0.82rem;">${item.s1}</div>
+        </div>
+        <div class="section-box sec-2" style="padding:10px; margin-bottom:6px;">
+            <div class="sec-title" style="font-size:0.85rem;">② 뒷면</div>
+            <div class="sec-content" style="font-size:0.82rem;">${item.s2}</div>
+        </div>
+        <div class="section-box sec-3" style="padding:10px;">
+            <div class="sec-title" style="font-size:0.85rem;">③ 질문</div>
+            <div class="sec-content" style="font-size:0.82rem; white-space:pre-line;">${item.s3}</div>
+        </div>
+    `;
+}
+
+// 2. 중앙 12가지 지불항목 심층 진단 가이드 렌더링
+function toggleManualList() {
+    isManualListMode = !isManualListMode;
+    const container = document.getElementById('manualSelectorContainer');
+    const btn = document.event ? document.event.target : document.querySelector('.toggle-btn');
     
-    document.getElementById('detailTitle').innerText = `📖 연결된 지불항목 가이드`;
+    if (isManualListMode) {
+        container.innerHTML = `<div id="manualListMode" style="display:flex; flex-direction:column; gap:6px; max-height:220px; overflow-y:auto; margin-bottom:10px;"></div>`;
+        const listModeEl = document.getElementById('manualListMode');
+        
+        for (let i = 1; i <= 12; i++) {
+            const m = manualsData[i];
+            const card = document.createElement('div');
+            card.className = `list-card ${i === selectedManualId ? 'selected' : ''}`;
+            card.onclick = () => { selectedManualId = i; document.getElementById('manualSelect').value = i; toggleManualList(); };
+            card.innerHTML = `<div class="card-name" style="font-size:0.85rem;">${m.title}</div>`;
+            listModeEl.appendChild(card);
+        }
+        document.querySelector('.toggle-btn').innerText = "셀렉트 보기";
+        document.querySelector('.toggle-btn').classList.add('active');
+    } else {
+        container.innerHTML = `
+            <select id="manualSelect" onchange="selectManual(this.value)" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem; font-weight: 600;">
+                <option value="1">1. [좋은 게 좋은 거지 / 갈등이 싫어서 참고 넘기기]</option>
+                <option value="2">2. [내가 다 안고 가야지, 알아서 해야지 / 과도한 책임감]</option>
+                <option value="3">3. [마음의 문을 닫고 / 상처받기 싫어서 무감각해지기]</option>
+                <option value="4">4. [안 바뀔 거라며 / 기대한 마음을 내려놓고 체념하고 살기]</option>
+                <option value="5">5. [실패가 두려워 새로운 시작을 미루기]</option>
+                <option value="6">6. [지루하고 버거운 현실에서 자극적인 것으로 도망가기]</option>
+                <option value="7">7. [남들에게 잘 보이기 위해 내 감정/욕구를 숨기고 애쓰기]</option>
+                <option value="8">8. [몸이 비명을 질러도 무시하고 그냥 밀어붙이기]</option>
+                <option value="9">9. [남의 속도에 맞춰 나를 재단하고 비교하기]</option>
+                <option value="10">10. [아무도 나를 이해 못 해 근본적인 외로움 속에 갇히기]</option>
+                <option value="11">11. [문제가 생기면 항상 나에게 돌리며 자책하기]</option>
+                <option value="12">12. [아직 오지 않은 일에 미리 걱정하며 에너지를 낭비하기]</option>
+            </select>
+        `;
+        document.getElementById('manualSelect').value = selectedManualId;
+        document.querySelector('.toggle-btn').innerText = "목록 보기";
+        document.querySelector('.toggle-btn').classList.remove('active');
+    }
+}
+
+function selectManual(val) {
+    selectedManualId = parseInt(val);
+    renderManualDetail();
+}
+
+function renderManualDetail() {
+    const manual = manualsData[selectedManualId];
+    const detailEl = document.getElementById('manualDetailView');
+    
+    document.getElementById('manualTitle').innerText = `🔖 ${manual.title.split(' ')[0]} 심층 가이드`;
 
     detailEl.innerHTML = `
-        <div style="font-weight:700; font-size:1.05rem; color:#1e3a8a; margin-bottom:4px;">🔖 ${manual.title}</div>
-        <div style="font-size:0.85rem; color:#64748b; margin-bottom:12px;">(현재 선택한 겉보기 항목: <b>${mapping.title}</b>)</div>
+        <div style="font-weight:700; font-size:1rem; color:#1e3a8a; margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:8px;">${manual.title}</div>
         
         <div class="section-box sec-1">
             <div class="sec-title">1) 예상되는 핵심감정 / 에니어그램 / 근본적인 두려움</div>
@@ -325,6 +396,7 @@ function renderDetail() {
     `;
 }
 
+// 3. 우측 AI 슈퍼바이저 채팅
 function sendChat() {
     const input = document.getElementById('chatInput');
     const box = document.getElementById('chatBox');
@@ -335,19 +407,19 @@ function sendChat() {
     input.value = '';
     box.scrollTop = box.scrollHeight;
 
-    const mapping = mappingData.find(i => i.id === selectedId);
-    const manual = manualsData[mapping.manualId];
+    const currentManual = manualsData[selectedManualId];
 
     setTimeout(() => {
-        let reply = `💡 <b>[슈퍼비전 코칭]</b><br>선택하신 <b>"${mapping.title}"</b> 항목은 <em>${manual.title}</em> 지불항목과 연결됩니다. 상담 시 예시 멘트(<i>${manual.script.substring(0, 35)}...</i>)를 활용해 내담자의 무의식을 부드럽게 다뤄보세요!`;
+        let reply = `💡 <b>[슈퍼비전 코칭]</b><br>현재 보고 계신 <b>"${currentManual.title}"</b> 지불항목 가이드를 참고할 때, 내담자의 저항을 다루려면 실전 예시 멘트(<i>${currentManual.script.substring(0, 35)}...</i>)를 적용해 보세요!`;
         box.innerHTML += `<div class="msg ai">${reply}</div>`;
         box.scrollTop = box.scrollHeight;
     }, 500);
 }
 
 // 초기 로드
-renderList();
-renderDetail();
+renderLeftList();
+renderLeftDetail();
+renderManualDetail();
 </script>
 
 </body>
