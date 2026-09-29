@@ -19,29 +19,33 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.6; padding: 15px; }
         .container { max-width: 1600px; margin: 0 auto; }
         
-        header { text-align: center; margin-bottom: 20px; padding: 18px; background: var(--card); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        header h1 { font-size: 1.6rem; color: #1e3a8a; margin-bottom: 4px; }
-        header p { color: var(--text-sub); font-size: 0.9rem; }
+        header { text-align: center; margin-bottom: 16px; padding: 14px; background: var(--card); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        header h1 { font-size: 1.4rem; color: #1e3a8a; margin-bottom: 4px; }
+        header p { color: var(--text-sub); font-size: 0.85rem; }
+
+        /* 모바일용 탭 버튼 (PC에서는 숨김) */
+        .mobile-tabs { display: none; gap: 8px; margin-bottom: 16px; }
+        .tab-btn { flex: 1; padding: 12px; font-size: 0.95rem; font-weight: 700; border: 1px solid var(--border); background: #fff; border-radius: 8px; cursor: pointer; color: var(--text-sub); text-align: center; }
+        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
         /* 좌우 2분할 레이아웃 */
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media(max-width: 1100px) { .dashboard-grid { grid-template-columns: 1fr; } }
 
-        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; height: 820px; display: flex; flex-direction: column; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
-        .panel-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; color: #1e293b; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; height: 820px; display: flex; flex-direction: column; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .panel-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; color: #1e293b; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 6px; }
         
-        /* 목록 칸 높이 축소 (한번에 3~4개 정도 보이도록 max-height 조정) */
-        .list-container { overflow-y: auto; max-height: 220px; display: flex; flex-direction: column; gap: 6px; padding-right: 4px; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: #fafafa; }
+        /* 목록 칸 높이 축소 */
+        .list-container { overflow-y: auto; max-height: 200px; display: flex; flex-direction: column; gap: 6px; padding-right: 4px; border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: #fafafa; }
         .list-card { padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.2s; background: #fff; }
         .list-card:hover { background: #f1f5f9; }
         .list-card.selected { background: #dbeafe; border-color: var(--primary); }
         .card-cat { font-size: 0.7rem; font-weight: 700; color: var(--primary); margin-bottom: 1px; }
         .card-name { font-size: 0.85rem; font-weight: 600; color: var(--text); }
 
-        /* 설명 칸 영역을 작게 줄여서 한 번에 여러 개가 너무 내려가지 않도록 최적화 */
+        /* 설명 칸 영역 */
         .detail-box { overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px; padding-right: 4px; margin-top: 10px; }
 
         /* 공통 섹션 박스 스타일 */
@@ -54,6 +58,14 @@
         .sec-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 6px; color: #1e293b; }
         .sec-content { font-size: 0.85rem; color: #334155; white-space: pre-line; }
         .quote-box { background: #fff; border: 1px dashed var(--primary); padding: 10px; border-radius: 6px; margin-top: 6px; font-style: italic; color: #1e3a8a; font-size: 0.83rem; }
+
+        /* 모바일 화면 대응 (1024px 이하) */
+        @media(max-width: 1024px) {
+            .mobile-tabs { display: flex; }
+            .dashboard-grid { display: block; }
+            .panel { display: none; height: 75vh; }
+            .panel.active-tab { display: flex; }
+        }
     </style>
 </head>
 <body>
@@ -61,32 +73,34 @@
 <div class="container">
     <header>
         <h1>💼 [상담사 전용] 마음 영수증 독립형 대시보드</h1>
-        <p>왼쪽 패널: 14가지 겉보기 항목 및 스크립트 | 오른쪽 패널: 12가지 마음 지불 항목 심층 진단 가이드</p>
+        <p>왼쪽: 14가지 겉보기 항목 | 오른쪽: 12가지 마음 지불 항목 심층 진단 가이드</p>
     </header>
+
+    <!-- 모바일 전용 탭 전환 버튼 -->
+    <div class="mobile-tabs">
+        <button class="tab-btn active" onclick="switchTab('left', this)">📋 14가지 겉보기 항목</button>
+        <button class="tab-btn" onclick="switchTab('right', this)">🔖 12가지 심층 가이드</button>
+    </div>
 
     <div class="dashboard-grid">
         <!-- 1. 좌측 패널: 14가지 겉보기 항목 리스트 & 스크립트 -->
-        <div class="panel">
+        <div class="panel active-tab" id="leftPanel">
             <div class="panel-title">
                 <span>📋 14가지 겉보기 항목</span>
-                <span style="font-size:0.75rem; color:var(--text-sub);">항목 클릭 시 아래에 스크립트 출력</span>
+                <span style="font-size:0.75rem; color:var(--text-sub);">항목 클릭 시 스크립트 출력</span>
             </div>
             <div class="list-container" id="leftList"></div>
-            <div class="detail-box" id="leftDetail">
-                <!-- 선택된 항목의 스크립트 동적 로드 -->
-            </div>
+            <div class="detail-box" id="leftDetail"></div>
         </div>
 
         <!-- 2. 우측 패널: 12가지 마음 지불 항목 심층 진단 가이드 리스트 & 상세 -->
-        <div class="panel">
+        <div class="panel" id="rightPanel">
             <div class="panel-title">
-                <span id="rightPanelTitle">🔖 12가지 지불항목 심층 진단 가이드</span>
-                <span style="font-size:0.75rem; color:var(--text-sub);">가이드 클릭 시 아래에 내용 출력</span>
+                <span id="rightPanelTitle">🔖 12가지 심층 진단 가이드</span>
+                <span style="font-size:0.75rem; color:var(--text-sub);">가이드 클릭 시 내용 출력</span>
             </div>
             <div class="list-container" id="rightList"></div>
-            <div class="detail-box" id="rightDetail">
-                <!-- 선택된 심층 가이드 동적 로드 -->
-            </div>
+            <div class="detail-box" id="rightDetail"></div>
         </div>
     </div>
 </div>
@@ -110,7 +124,7 @@ const apparentItems = [
     { id: 14, category: "마음 상태", title: "14. 남들과 비슷한 속도로 살고 있다는 안심", s1: "세상의 흐름 속에서 남들과 고르게 어우러지며 무난한 속도를 유지하는 것은, 내 삶에 따뜻한 안정감과 소속감을 주는 중요한 부분입니다.", s2: "하지만 '남들만큼은 하고 있다'는 안도감 뒤에, 혹시 새로운 도전이나 성장에 따르는 불편함을 피해 지금의 편안함에 안주하고 싶은 마음이 숨어있진 않나요?", s3: "• \"'중간만 가자'는 마음 뒤에 숨겨두고 정작 내 안에서 진짜 시도해보고 싶었던 도전이나 꿈은 무엇이었나요?\"\n• \"남들과 비슷한 속도라는 울타리 안에서 내 삶의 가능성이나 잠재력을 스스로 제한하고 계신 건 아닌가요?\"" }
 ];
 
-// 12가지 마음 지불 항목 심층 진단 가이드 원문 데이터베이스 (1~4번 슬래시 삭제 반영)
+// 12가지 마음 지불 항목 심층 진단 가이드 원문 데이터베이스
 const manualsData = {
     1: {
         title: "1. [좋은 게 좋은 거지]",
@@ -198,7 +212,7 @@ const manualsData = {
         c1: "외로움, 소외", c2: "4번 (개성가), 5번 (탐구가)", c3: "영원한 혼자 남겨짐, 오해받음",
         dynamics: "• 4번 유형 (핵심감정: 외로움 / 소외): \"내 독특한 감정과 상처는 세상 그 누구도 온전히 이해할 수 없다\"는 근본적인 **외로움**과 **소외**감을 품습니다.\n• 5번 유형 (핵심감정: 외로움 / 적개심): 타인과 깊이 연결되는 것을 자신의 자아 침해로 여겨 마음의 문을 걸어 잠급니다. 이해받으려는 시도를 포기한 채 고립되어 **외로움**을 키웁니다.",
         diagnostics: "에니어그램 4번 및 5번의 정서적 고립 역동에서 비롯되며, 타인에게 다가갔다 상처받느니 차라리 스스로 독특하고 고립된 섬이 되는 것을 선택합니다. 이렇기 때문에 내담자는 겉보기로 '평범하게 유지되는 친구/조직 관계'나 '누구도 만나지 않고 혼자 쉬는 주말' 같은 항목을 체크했을 수 있습니다. 사회적 관계를 유지해도 마음은 채워지지 않는 외로움을 지불하고 있었습니다.",
-        script: "\"평범하게 관계를 유지하거나 혼자 쉬는 모습 이면에는, '아무도 나를 이해 못 해'라는 근본적인 외로움과 결핍감 속에 갇혀 있던 단절감이 깔려 있었네요. 이렇기 때문에 여럿 속에 있어도, 혼자 있어도 극심한 외로움이라는 적자를 겪고 계셨던 것입니다.\"",
+        script: "\"평범하게 관계를 유지하거나 혼자 쉬는 모습 이면에는, '아무도 나를 이해 못 해'라는 근본적인 외로움과 결핍감 속에 갇히 있던 단절감이 깔려 있었네요. 이렇기 때문에 여럿 속에 있어도, 혼자 있어도 극심한 외로움이라는 적자를 겪고 계셨던 것입니다.\"",
         points: "• [ 30p ] : 사람들과 어울리지만 내 깊은 속마음은 굳이 꺼내지 않고 적당한 거리를 유지하는 상태\n• [ 50p ] : 여럿이 있어도 왠지 나만 홀로 겉도는 기분이 들고, 내 고통을 알아주지 못해 **외로움**이 밀려오는 상태\n• [ 100p ] : 마음의 문을 철저히 닫은 채 \"어차피 세상에 날 이해할 사람은 없다\"며 근본적인 **소외**과 고립 속에 침잠해 있는 상태",
         expansion: "• 9번 유형의 경우: 내 목소리나 존재감이 집단에서 중요하지 않다고 여겨 속마음을 표현하지 않고 침묵하다가, 결국 누구에게도 닿지 못했다는 '외로움'과 '무기력'의 섬에 갇힙니다.\n• 3번 유형의 경우: 오직 성취와 효율로만 평가받는 세상에서 진짜 내 감정은 감춘 채 살아가다 보니, 성공해도 채워지지 않는 '허무'와 '소외'를 경험합니다.\n• 6번 유형의 경우: 타인에게 마음을 열었다가 배신당하거나 안전이 깨질까 봐 스스로 방어적 장막을 쳐서, 여럿 속에 있어도 누구와도 연결되지 못하고 '공포'와 '소외'를 겪습니다."
     },
@@ -224,6 +238,19 @@ const manualsData = {
 
 let selectedApparentId = 1;
 let selectedManualId = 1;
+
+// 모바일 탭 전환 함수
+function switchTab(target, btn) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active-tab'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    
+    if(target === 'left') {
+        document.getElementById('leftPanel').classList.add('active-tab');
+    } else {
+        document.getElementById('rightPanel').classList.add('active-tab');
+    }
+    btn.classList.add('active');
+}
 
 // 1. 좌측 패널: 14가지 겉보기 항목 리스트 렌더링
 function renderLeftList() {
