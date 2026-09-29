@@ -26,24 +26,31 @@
         header h1 { font-size: 1.8rem; color: #1e3a8a; margin-bottom: 6px; }
         header p { color: var(--text-sub); font-size: 0.95rem; }
 
-        .dashboard-grid { display: grid; grid-template-columns: 350px 1fr 350px; gap: 20px; }
-        @media(max-width: 1300px) { .dashboard-grid { grid-template-columns: 1fr; } }
+        /* 좌우 2분할 레이아웃 */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        @media(max-width: 1100px) { .dashboard-grid { grid-template-columns: 1fr; } }
 
-        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; height: 880px; display: flex; flex-direction: column; }
-        .panel-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; color: #1e293b; display: flex; justify-content: space-between; align-items: center; }
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; height: 880px; display: flex; flex-direction: column; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .panel-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 16px; color: #1e293b; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
         
-        /* 공통 리스트 스크롤 영역 */
-        .list-container { overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
-        .list-card { padding: 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; background: #fff; }
+        /* 좌측: 14가지 겉보기 항목 리스트 및 스크립트 */
+        .left-content { display: flex; flex-direction: column; flex: 1; overflow: hidden; gap: 16px; }
+        .list-container { overflow-y: auto; max-height: 320px; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: #fafafa; }
+        .list-card { padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.2s; background: #fff; }
         .list-card:hover { background: #f1f5f9; }
         .list-card.selected { background: #dbeafe; border-color: var(--primary); }
         .card-cat { font-size: 0.75rem; font-weight: 700; color: var(--primary); margin-bottom: 2px; }
         .card-name { font-size: 0.9rem; font-weight: 600; color: var(--text); }
 
-        /* 중앙 상세 뷰 */
-        .detail-view { overflow-y: auto; flex: 1; padding-right: 8px; display: flex; flex-direction: column; gap: 16px; }
-        
-        .section-box { padding: 16px; border-radius: 10px; border-left: 5px solid; margin-bottom: 12px; }
+        .script-detail-box { overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 12px; padding-right: 4px; }
+
+        /* 우측: 12가지 마음 지불 항목 심층 진단 가이드 */
+        .right-content { display: flex; flex-direction: column; flex: 1; overflow: hidden; gap: 16px; }
+        .manual-selector-area { margin-bottom: 4px; }
+        .manual-detail-view { overflow-y: auto; flex: 1; padding-right: 8px; display: flex; flex-direction: column; gap: 16px; }
+
+        /* 공통 섹션 박스 스타일 */
+        .section-box { padding: 16px; border-radius: 10px; border-left: 5px solid; }
         .sec-1 { background-color: var(--accent-1); border-color: #3b82f6; }
         .sec-2 { background-color: var(--accent-2); border-color: #ef4444; }
         .sec-3 { background-color: var(--accent-3); border-color: #10b981; }
@@ -52,18 +59,8 @@
         .sec-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; color: #1e293b; }
         .sec-content { font-size: 0.9rem; color: #334155; white-space: pre-line; }
         .quote-box { background: #fff; border: 1px dashed var(--primary); padding: 12px; border-radius: 6px; margin-top: 8px; font-style: italic; color: #1e3a8a; }
-
-        /* 우측: AI 슈퍼바이저 채팅 */
-        .chat-container { display: flex; flex-direction: column; flex: 1; overflow: hidden; margin-top: 10px; }
-        .chat-messages { flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: #fafafa; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
-        .msg { font-size: 0.88rem; padding: 10px 14px; border-radius: 10px; max-width: 90%; line-height: 1.5; word-break: break-all; }
-        .msg.user { background: #dbeafe; align-self: flex-end; color: #1e3a8a; }
-        .msg.ai { background: #ffffff; border: 1px solid var(--border); align-self: flex-start; color: #334155; }
-        .chat-input-area { display: flex; gap: 8px; }
-        .chat-input-area input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; }
-        .chat-input-area button { padding: 10px 16px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
         
-        .toggle-btn { font-size: 0.8rem; padding: 4px 8px; background: #e2e8f0; border: none; border-radius: 4px; cursor: pointer; }
+        .toggle-btn { font-size: 0.8rem; padding: 4px 10px; background: #e2e8f0; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; }
         .toggle-btn.active { background: var(--primary); color: white; }
     </style>
 </head>
@@ -72,64 +69,49 @@
 <div class="container">
     <header>
         <h1>💼 [상담사 전용] 마음 영수증 독립형 대시보드</h1>
-        <p>왼쪽: 14가지 겉보기 항목 스크립트 | 오른쪽: 12가지 마음 지불 항목 심층 진단 가이드 (독자적 구성)</p>
+        <p>왼쪽 패널: 14가지 겉보기 항목 및 스크립트 | 오른쪽 패널: 12가지 마음 지불 항목 심층 진단 가이드</p>
     </header>
 
     <div class="dashboard-grid">
-        <!-- 1. 좌측 패널: 14가지 겉보기 항목 리스트 및 스크립트 -->
+        <!-- 1. 좌측 패널: 14가지 겉보기 항목 리스트 & 스크립트 -->
         <div class="panel">
             <div class="panel-title">
-                <span>📋 14가지 겉보기 항목</span>
-                <span style="font-size:0.75rem; color:var(--text-sub);">클릭 시 스크립트 표시</span>
+                <span>📋 14가지 겉보기 항목 & 3단계 스크립트</span>
+                <span style="font-size:0.75rem; color:var(--text-sub);">항목 클릭 시 아래에 출력</span>
             </div>
-            <div class="list-container" id="leftList"></div>
-            <div id="leftDetail" style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 12px; max-height: 250px; overflow-y: auto;">
-                <div style="font-size:0.85rem; color:#64748b;">좌측에서 항목을 선택하면 3단계 스크립트가 나타납니다.</div>
-            </div>
-        </div>
-
-        <!-- 2. 중앙 패널: 12가지 숨겨진 마음 지불 항목 중심의 심층 진단 가이드 -->
-        <div class="panel">
-            <div class="panel-title">
-                <span id="manualTitle">🔖 12가지 마음 지불 항목 심층 진단 가이드</span>
-                <button class="toggle-btn active" onclick="toggleManualList()">목록 보기</button>
-            </div>
-            <div id="manualSelectorContainer" style="margin-bottom: 10px;">
-                <select id="manualSelect" onchange="selectManual(this.value)" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem; font-weight: 600;">
-                    <option value="1">1. [좋은 게 좋은 거지 / 갈등이 싫어서 참고 넘기기]</option>
-                    <option value="2">2. [내가 다 안고 가야지, 알아서 해야지 / 과도한 책임감]</option>
-                    <option value="3">3. [마음의 문을 닫고 / 상처받기 싫어서 무감각해지기]</option>
-                    <option value="4">4. [안 바뀔 거라며 / 기대한 마음을 내려놓고 체념하고 살기]</option>
-                    <option value="5">5. [실패가 두려워 새로운 시작을 미루기]</option>
-                    <option value="6">6. [지루하고 버거운 현실에서 자극적인 것으로 도망가기]</option>
-                    <option value="7">7. [남들에게 잘 보이기 위해 내 감정/욕구를 숨기고 애쓰기]</option>
-                    <option value="8">8. [몸이 비명을 질러도 무시하고 그냥 밀어붙이기]</option>
-                    <option value="9">9. [남의 속도에 맞춰 나를 재단하고 비교하기]</option>
-                    <option value="10">10. [아무도 나를 이해 못 해 근본적인 외로움 속에 갇히기]</option>
-                    <option value="11">11. [문제가 생기면 항상 나에게 돌리며 자책하기]</option>
-                    <option value="12">12. [아직 오지 않은 일에 미리 걱정하며 에너지를 낭비하기]</option>
-                </select>
-            </div>
-            <div class="detail-view" id="manualDetailView">
-                <!-- 독자적 가이드 내용 동적 로드 -->
-            </div>
-        </div>
-
-        <!-- 3. 우측 패널: AI 슈퍼바이저 코칭 채팅 -->
-        <div class="panel">
-            <div class="panel-title">
-                <span>💬 AI 슈퍼바이저 코칭</span>
-            </div>
-            <div style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 10px;">
-                상담 진행 중 필요한 코칭이나 저항 대처법을 실시간으로 물어보세요.
-            </div>
-            <div class="chat-container">
-                <div class="chat-messages" id="chatBox">
-                    <div class="msg ai">안녕하세요, 상담사님! 독립적으로 구성된 14가지 겉보기 스크립트와 12가지 심층 지불항목 가이드를 활용해 멋진 상담을 진행해 보세요. 무엇이든 도와드리겠습니다.</div>
+            <div class="left-content">
+                <div class="list-container" id="leftList"></div>
+                <div class="script-detail-box" id="leftDetail">
+                    <!-- 선택된 항목의 스크립트 동적 로드 -->
                 </div>
-                <div class="chat-input-area">
-                    <input type="text" id="chatInput" placeholder="고민이나 질문을 입력하세요..." onkeypress="if(event.key==='Enter') sendChat()">
-                    <button onclick="sendChat()">전송</button>
+            </div>
+        </div>
+
+        <!-- 2. 우측 패널: 12가지 마음 지불 항목 심층 진단 가이드 -->
+        <div class="panel">
+            <div class="panel-title">
+                <span id="manualPanelTitle">🔖 12가지 지불항목 심층 진단 가이드</span>
+                <button class="toggle-btn" onclick="toggleManualList()">목록 보기</button>
+            </div>
+            <div class="right-content">
+                <div class="manual-selector-area" id="manualSelectorContainer">
+                    <select id="manualSelect" onchange="selectManual(this.value)" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem; font-weight: 600; background-color: #fff;">
+                        <option value="1">1. [좋은 게 좋은 거지 / 갈등이 싫어서 참고 넘기기]</option>
+                        <option value="2">2. [내가 다 안고 가야지, 알아서 해야지 / 과도한 책임감]</option>
+                        <option value="3">3. [마음의 문을 닫고 / 상처받기 싫어서 무감각해지기]</option>
+                        <option value="4">4. [안 바뀔 거라며 / 기대한 마음을 내려놓고 체념하고 살기]</option>
+                        <option value="5">5. [실패가 두려워 새로운 시작을 미루기]</option>
+                        <option value="6">6. [지루하고 버거운 현실에서 자극적인 것으로 도망가기]</option>
+                        <option value="7">7. [남들에게 잘 보이기 위해 내 감정/욕구를 숨기고 애쓰기]</option>
+                        <option value="8">8. [몸이 비명을 질러도 무시하고 그냥 밀어붙이기]</option>
+                        <option value="9">9. [남의 속도에 맞춰 나를 재단하고 비교하기]</option>
+                        <option value="10">10. [아무도 나를 이해 못 해 근본적인 외로움 속에 갇히기]</option>
+                        <option value="11">11. [문제가 생기면 항상 나에게 돌리며 자책하기]</option>
+                        <option value="12">12. [아직 오지 않은 일에 미리 걱정하며 에너지를 낭비하기]</option>
+                    </select>
+                </div>
+                <div class="manual-detail-view" id="manualDetailView">
+                    <!-- 심층 진단 가이드 내용 동적 로드 -->
                 </div>
             </div>
         </div>
@@ -271,7 +253,7 @@ let selectedApparentId = 1;
 let selectedManualId = 1;
 let isManualListMode = false;
 
-// 1. 좌측 14가지 겉보기 항목 리스트 렌더링
+// 1. 좌측 패널: 14가지 겉보기 항목 리스트 렌더링
 function renderLeftList() {
     const listEl = document.getElementById('leftList');
     listEl.innerHTML = '';
@@ -291,30 +273,29 @@ function renderLeftDetail() {
     const item = apparentItems.find(i => i.id === selectedApparentId);
     const detailEl = document.getElementById('leftDetail');
     detailEl.innerHTML = `
-        <div style="font-weight:700; font-size:0.9rem; color:#1e3a8a; margin-bottom:8px;">📌 ${item.title} 스크립트</div>
-        <div class="section-box sec-1" style="padding:10px; margin-bottom:6px;">
-            <div class="sec-title" style="font-size:0.85rem;">① 공감</div>
-            <div class="sec-content" style="font-size:0.82rem;">${item.s1}</div>
+        <div style="font-weight:700; font-size:1rem; color:#1e3a8a; margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:8px;">📌 ${item.title} 스크립트 가이드</div>
+        <div class="section-box sec-1">
+            <div class="sec-title">① 지출 인정 및 공감</div>
+            <div class="sec-content">${item.s1}</div>
         </div>
-        <div class="section-box sec-2" style="padding:10px; margin-bottom:6px;">
-            <div class="sec-title" style="font-size:0.85rem;">② 뒷면</div>
-            <div class="sec-content" style="font-size:0.82rem;">${item.s2}</div>
+        <div class="section-box sec-2">
+            <div class="sec-title">② 동전의 뒷면 짚어주기</div>
+            <div class="sec-content">${item.s2}</div>
         </div>
-        <div class="section-box sec-3" style="padding:10px;">
-            <div class="sec-title" style="font-size:0.85rem;">③ 질문</div>
-            <div class="sec-content" style="font-size:0.82rem; white-space:pre-line;">${item.s3}</div>
+        <div class="section-box sec-3">
+            <div class="sec-title">③ 깊이 있는 꼬리 질문</div>
+            <div class="sec-content" style="white-space:pre-line;">${item.s3}</div>
         </div>
     `;
 }
 
-// 2. 중앙 12가지 지불항목 심층 진단 가이드 렌더링
+// 2. 우측 패널: 12가지 지불항목 심층 진단 가이드 렌더링
 function toggleManualList() {
     isManualListMode = !isManualListMode;
     const container = document.getElementById('manualSelectorContainer');
-    const btn = document.event ? document.event.target : document.querySelector('.toggle-btn');
     
     if (isManualListMode) {
-        container.innerHTML = `<div id="manualListMode" style="display:flex; flex-direction:column; gap:6px; max-height:220px; overflow-y:auto; margin-bottom:10px;"></div>`;
+        container.innerHTML = `<div id="manualListMode" style="display:flex; flex-direction:column; gap:6px; max-height:220px; overflow-y:auto; border:1px solid var(--border); border-radius:6px; padding:8px; background:#fafafa;"></div>`;
         const listModeEl = document.getElementById('manualListMode');
         
         for (let i = 1; i <= 12; i++) {
@@ -322,14 +303,14 @@ function toggleManualList() {
             const card = document.createElement('div');
             card.className = `list-card ${i === selectedManualId ? 'selected' : ''}`;
             card.onclick = () => { selectedManualId = i; document.getElementById('manualSelect').value = i; toggleManualList(); };
-            card.innerHTML = `<div class="card-name" style="font-size:0.85rem;">${m.title}</div>`;
+            card.innerHTML = `<div class="card-name" style="font-size:0.88rem;">${m.title}</div>`;
             listModeEl.appendChild(card);
         }
         document.querySelector('.toggle-btn').innerText = "셀렉트 보기";
         document.querySelector('.toggle-btn').classList.add('active');
     } else {
         container.innerHTML = `
-            <select id="manualSelect" onchange="selectManual(this.value)" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem; font-weight: 600;">
+            <select id="manualSelect" onchange="selectManual(this.value)" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem; font-weight: 600; background-color: #fff;">
                 <option value="1">1. [좋은 게 좋은 거지 / 갈등이 싫어서 참고 넘기기]</option>
                 <option value="2">2. [내가 다 안고 가야지, 알아서 해야지 / 과도한 책임감]</option>
                 <option value="3">3. [마음의 문을 닫고 / 상처받기 싫어서 무감각해지기]</option>
@@ -359,10 +340,10 @@ function renderManualDetail() {
     const manual = manualsData[selectedManualId];
     const detailEl = document.getElementById('manualDetailView');
     
-    document.getElementById('manualTitle').innerText = `🔖 ${manual.title.split(' ')[0]} 심층 가이드`;
+    document.getElementById('manualPanelTitle').innerText = `🔖 ${manual.title.split(' ')[0]} 심층 가이드`;
 
     detailEl.innerHTML = `
-        <div style="font-weight:700; font-size:1rem; color:#1e3a8a; margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:8px;">${manual.title}</div>
+        <div style="font-weight:700; font-size:1.05rem; color:#1e3a8a; margin-bottom:4px;">${manual.title}</div>
         
         <div class="section-box sec-1">
             <div class="sec-title">1) 예상되는 핵심감정 / 에니어그램 / 근본적인 두려움</div>
@@ -394,26 +375,6 @@ function renderManualDetail() {
             <div class="sec-content">${manual.expansion}</div>
         </div>
     `;
-}
-
-// 3. 우측 AI 슈퍼바이저 채팅
-function sendChat() {
-    const input = document.getElementById('chatInput');
-    const box = document.getElementById('chatBox');
-    const text = input.value.trim();
-    if(!text) return;
-
-    box.innerHTML += `<div class="msg user">${text}</div>`;
-    input.value = '';
-    box.scrollTop = box.scrollHeight;
-
-    const currentManual = manualsData[selectedManualId];
-
-    setTimeout(() => {
-        let reply = `💡 <b>[슈퍼비전 코칭]</b><br>현재 보고 계신 <b>"${currentManual.title}"</b> 지불항목 가이드를 참고할 때, 내담자의 저항을 다루려면 실전 예시 멘트(<i>${currentManual.script.substring(0, 35)}...</i>)를 적용해 보세요!`;
-        box.innerHTML += `<div class="msg ai">${reply}</div>`;
-        box.scrollTop = box.scrollHeight;
-    }, 500);
 }
 
 // 초기 로드
